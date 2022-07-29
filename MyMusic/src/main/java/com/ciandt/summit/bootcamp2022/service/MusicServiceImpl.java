@@ -23,10 +23,7 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     public boolean isAValidSearch(String filter) {
-        if (filter.length() < 2){
-            return false;
-        }
-        return true;
+        return filter.length() >= 2;
     }
 
     @Override
