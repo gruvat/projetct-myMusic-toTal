@@ -4,12 +4,12 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 @Log4j2
-@ResponseStatus(HttpStatus.FORBIDDEN)
+@ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class CredentialsException extends RuntimeException {
 
     public CredentialsException(String message) {
         super(message);
-        log.error("Invalid Credential: {}", message);
+        log.error(message);
     }
     
 }

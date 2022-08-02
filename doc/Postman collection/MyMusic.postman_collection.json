@@ -125,7 +125,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/musicas?filtro=ar",
+							"raw": "http://localhost:8081/api/musics",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -133,13 +133,7 @@
 							"port": "8081",
 							"path": [
 								"api",
-								"musicas"
-							],
-							"query": [
-								{
-									"key": "filtro",
-									"value": "ar"
-								}
+								"musics"
 							]
 						}
 					},
@@ -148,10 +142,13 @@
 				{
 					"name": "findMusicsByFilter",
 					"request": {
+						"auth": {
+							"type": "bearer"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/musicas?filtro=long",
+							"raw": "http://localhost:8081/api/musics?filter=long",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -159,11 +156,11 @@
 							"port": "8081",
 							"path": [
 								"api",
-								"musicas"
+								"musics"
 							],
 							"query": [
 								{
-									"key": "filtro",
+									"key": "filter",
 									"value": "long"
 								}
 							]

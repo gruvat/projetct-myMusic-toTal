@@ -24,6 +24,7 @@ public class Music implements Serializable {
 
     @Id
     @Column(name = "Id")
+    @NonNull
     private String id;
 
     @Column(name = "Nome")

@@ -3,6 +3,8 @@ package com.ciandt.summit.bootcamp2022.entity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,6 +23,7 @@ public class Playlist implements Serializable {
     @Column(name = "Id")
     private String id;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany
     @JoinTable(
             name = "PlaylistMusicas",
@@ -29,7 +32,4 @@ public class Playlist implements Serializable {
     )
     @EqualsAndHashCode.Exclude private Set<Music> musics;
 
-    public void addMusic(Music music) {
-        this.musics.add(music);
-    }
 }
