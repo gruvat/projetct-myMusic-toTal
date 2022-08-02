@@ -5,7 +5,7 @@ import com.ciandt.summit.bootcamp2022.common.exception.service.MusicsAndArtistsN
 import com.ciandt.summit.bootcamp2022.entity.Music;
 import com.ciandt.summit.bootcamp2022.repository.MusicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,6 +22,7 @@ public class MusicServiceImpl implements MusicService {
     }
 
     @Override
+    @Cacheable(value = "music_cache")
     public Set<Music> searchMusicsByFilter(String filter) {
 
         if(isAValidSearch(filter)){
@@ -39,6 +40,7 @@ public class MusicServiceImpl implements MusicService {
     }
 
     @Override
+    @Cacheable(value = "music_cache")
     public Set<Music> searchAllMusics(){
         Set<Music> allMusics = musicRepository.findMusicsByMusicsAndArtistsName("");
 
