@@ -9,7 +9,7 @@ public class InvalidParameterException extends RuntimeException {
 
     public InvalidParameterException(String message) {
         super(message);
-        log.error("Invalid Parameter {}", message);
+        log.error(message);
     }
 
 }

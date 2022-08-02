@@ -15,7 +15,6 @@ public class MusicServiceTest {
     @Autowired
     private MusicService musicService;
 
-
     @DisplayName(value = "Valid Parameter")
     @ParameterizedTest(name = "Parameter with more than two characters {0}")
     @ValueSource(strings = {"hi", "Us", "HIGHER", "Sweet Child O' Mine"})

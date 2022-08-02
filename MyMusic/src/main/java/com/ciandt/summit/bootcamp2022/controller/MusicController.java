@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/musicas")
+@RequestMapping("/api/musics")
 @Tag(name = "Music")
 @Validated
 @RequiredArgsConstructor
@@ -35,10 +35,10 @@ public class MusicController {
             @ApiResponse(responseCode = "200", description = "Operation success"),
             @ApiResponse(responseCode = "204", description = "No results"),
             @ApiResponse(responseCode = "400", description = "Not enough characters"),
-            @ApiResponse(responseCode = "403", description = "Not authorized")
+            @ApiResponse(responseCode = "401", description = "Not authorized")
     })
     public ResponseEntity<ResponseData<Set<Music>>>findMusics (
-            @RequestParam(name = "filtro", required = false) final String filter) {
+            @RequestParam(name = "filter", required = false) final String filter) {
         Set<Music> result;
         if (filter == null) {
             result = musicService.searchAllMusics();
