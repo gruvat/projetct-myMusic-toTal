@@ -120,7 +120,7 @@ public class MusicServiceCachingTest {
         // -> return 2
         Set<Music> fakeMusicReturn_2 = new HashSet<>();
         fakeMusicReturn_2.add(new Music());
-        fakeMusicReturn_2.add(new Music("Testing"));
+        fakeMusicReturn_2.add(new Music());
         // Fake returns
         doReturn(fakeMusicReturn_1).when(mockMusicRepository).findMusicsByMusicsAndArtistsName(filter_1);
         doReturn(fakeMusicReturn_2).when(mockMusicRepository).findMusicsByMusicsAndArtistsName("");
