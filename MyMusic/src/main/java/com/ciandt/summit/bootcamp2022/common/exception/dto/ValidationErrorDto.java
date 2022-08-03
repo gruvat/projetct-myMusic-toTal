@@ -8,14 +8,10 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 public class ValidationErrorDto {
-
     private LocalDateTime timestamp;
-
     private int status;
-
     private String error;
-
     private String message;
-
     private String path;
+
 }

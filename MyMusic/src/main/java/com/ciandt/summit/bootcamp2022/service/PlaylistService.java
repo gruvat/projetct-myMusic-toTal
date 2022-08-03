@@ -6,7 +6,6 @@ import com.ciandt.summit.bootcamp2022.entity.Playlist;
 import java.util.Set;
 
 public interface PlaylistService {
-
     Playlist findPlaylistById(String playlistId);
 
     boolean checkIfMusicNotExists(String musicId);
