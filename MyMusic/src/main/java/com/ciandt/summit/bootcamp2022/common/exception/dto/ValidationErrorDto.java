@@ -11,7 +11,7 @@ public class ValidationErrorDto {
 
     private LocalDateTime timestamp;
 
-    private Integer status;
+    private int status;
 
     private String error;
 
