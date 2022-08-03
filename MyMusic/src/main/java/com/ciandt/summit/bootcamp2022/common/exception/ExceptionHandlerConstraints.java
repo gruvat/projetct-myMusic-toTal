@@ -1,6 +1,7 @@
 package com.ciandt.summit.bootcamp2022.common.exception;
 
 import com.ciandt.summit.bootcamp2022.common.exception.dto.ValidationErrorDto;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+@Log4j2
 @RestControllerAdvice
 public class ExceptionHandlerConstraints {
     @Autowired
@@ -33,7 +35,7 @@ public class ExceptionHandlerConstraints {
             String message = messageSource.getMessage(e, Locale.US);
             String error = "Field: " + e.getField() + " -  Error: " + message;
             errors.add(error);
-
+            log.error(error);
         });
 
         return new ValidationErrorDto(timestamp, 400, HttpStatus.BAD_REQUEST.getReasonPhrase(),
