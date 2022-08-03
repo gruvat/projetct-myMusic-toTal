@@ -1,5 +1,7 @@
 package com.ciandt.summit.bootcamp2022.controller.dto;
 
+import com.ciandt.summit.bootcamp2022.entity.Artist;
+import com.ciandt.summit.bootcamp2022.entity.Music;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,5 +26,11 @@ public class MusicDto {
     @Valid
     @NotNull(message = "Music must contain artist")
     private ArtistDto artist;
+
+    public static Music toMusic(MusicDto musicDto) {
+        Music music = new Music(musicDto.getId(), musicDto.getName());
+        music.setArtist(new Artist(music.getId(), music.getName()));
+        return music;
+    }
 
 }

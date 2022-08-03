@@ -33,6 +33,6 @@ public class Music implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "ArtistaId", referencedColumnName = "Id")
-    @EqualsAndHashCode.Exclude private Artist artist;
+    @EqualsAndHashCode.Exclude @Setter private Artist artist;
 
 }

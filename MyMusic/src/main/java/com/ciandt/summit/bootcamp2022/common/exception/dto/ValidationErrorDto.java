@@ -1,15 +1,21 @@
 package com.ciandt.summit.bootcamp2022.common.exception.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class ValidationErrorDto {
 
-    private String field;
+    private LocalDateTime timestamp;
+
+    private Integer status;
+
+    private String error;
+
     private String message;
 
+    private String path;
 }
