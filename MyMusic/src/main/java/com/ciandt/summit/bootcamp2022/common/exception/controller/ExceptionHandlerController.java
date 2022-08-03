@@ -12,8 +12,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,40 +28,41 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public List<ValidationErrorDto> handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException exception, WebRequest request) {
+    public ValidationErrorWithFieldsDto handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException exception, HttpServletRequest request) {
 
-        List<ValidationErrorDto> errors = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
 
         fieldErrors.forEach(e -> {
             String message = messageSource.getMessage(e, Locale.US);
-            ValidationErrorWithFieldsDto error = new ValidationErrorWithFieldsDto(
-                    LocalDateTime.now(),
-                    HttpStatus.BAD_REQUEST.value(),
-                    HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                    message,
-                    request.getDescription(false).replace("uri=", ""),
-                    e.getField());
+            String error = "Field: " + e.getField() + " -  Error: " + message;
 
             errors.add(error);
         });
 
         log.error("Invalid fields on controller's method body");
-        return errors;
+
+        return new ValidationErrorWithFieldsDto(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Validation of body request failed.",
+                request.getServletPath(),
+                errors);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ValidationErrorDto handleHttpMessageNotReadableException(
-            HttpMessageNotReadableException exception, WebRequest request) {
+            HttpMessageNotReadableException exception, HttpServletRequest request) {
         log.error("Invalid body.");
         return new ValidationErrorDto(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                "Request with invalid format. Must be JSON.",
-                request.getDescription(false).replace("uri=", ""));
+                "Request body is incorrect",
+                request.getServletPath());
     }
 
 }
