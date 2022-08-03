@@ -12,7 +12,10 @@ import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -49,6 +52,6 @@ public class MusicServiceTest {
     public void testSearchReturnAllMusics() {
         Set<Music> AllMusicsTest = new HashSet<>(musicRepository.findAll());
         Set<Music> MusicSearchAllTest = musicService.searchAllMusics();
-        Assertions.assertEquals(AllMusicsTest , MusicSearchAllTest);
+        assertEquals(AllMusicsTest , MusicSearchAllTest);
     }
 }
