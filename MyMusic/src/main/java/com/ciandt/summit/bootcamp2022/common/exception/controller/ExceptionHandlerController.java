@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -41,13 +42,13 @@ public class ExceptionHandlerController {
             errors.add(error);
         });
 
-        log.error("Invalid fields on controller's method body");
+        log.error("\uD83D\uDD34  Invalid fields on controller's method body.");
 
         return new ValidationErrorWithFieldsDto(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                "Validation of body request failed.",
+                "Validation of body request failed \uD83D\uDD34",
                 request.getServletPath(),
                 errors);
     }
@@ -56,13 +57,25 @@ public class ExceptionHandlerController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ValidationErrorDto handleHttpMessageNotReadableException(
             HttpMessageNotReadableException exception, HttpServletRequest request) {
-        log.error("Invalid body.");
+        log.error("\uD83D\uDD34  Invalid body.");
         return new ValidationErrorDto(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                "Request body is incorrect",
+                "Request body is incorrect \uD83D\uDD34",
                 request.getServletPath());
     }
 
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ValidationErrorDto handleHttpMessageNotReadableException(
+            NoHandlerFoundException exception, HttpServletRequest request) {
+        log.error("\uD83D\uDE41  Resource was not found.");
+        return new ValidationErrorDto(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                "The given path or resource was not found \uD83D\uDE41",
+                request.getServletPath());
+    }
 }

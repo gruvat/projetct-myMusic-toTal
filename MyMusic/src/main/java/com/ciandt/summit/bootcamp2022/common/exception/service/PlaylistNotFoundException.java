@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class PlaylistNotFoundException extends RuntimeException {
 
     public PlaylistNotFoundException(String message) {
-        super(message);
-        log.error(message);
+        super(message + " \uD83D\uDE41");
+        log.error("\uD83D\uDE41 " + message);
     }
 }

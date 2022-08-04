@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class InvalidParameterException extends RuntimeException {
 
     public InvalidParameterException(String message) {
-        super(message);
-        log.error(message);
+        super(message + "\uD83D\uDD34");
+        log.error("\uD83D\uDD34 " + message);
     }
 
 }

@@ -44,12 +44,12 @@ public class PlaylistController {
 
         musicsData.getData().forEach(musicDto -> {
             Music music = MusicDto.toMusic(musicDto);
-            log.info("MusicDto converted to Music");
+            log.info("\uD83D\uDFE2️ MusicDto converted to Music");
             musics.add(music);
         });
 
         playlistService.addMusicsToPlaylist(musics, playlistId);
-        log.info("Musics added to playlist");
+        log.info("\uD83D\uDFE2️ Musics added to playlist");
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -69,7 +69,7 @@ public class PlaylistController {
         Set<Music> result;
 
         result = playlistService.findMusicsByPlaylistId(playlistId);
-        log.info("FindMusics With playlistId {}, total rows: {}", playlistId, result.size());
+        log.info("\uD83D\uDFE2️ FindMusics With playlistId {}, total rows: {}", playlistId, result.size());
 
         return ResponseEntity.ok(ResponseData.of(result));
     }

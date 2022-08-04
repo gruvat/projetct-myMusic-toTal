@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class MusicNotFoundException extends RuntimeException {
 
     public MusicNotFoundException(String message) {
-        super(message);
-        log.error(message);
+        super(message + " \uD83D\uDE41");
+        log.error("\uD83D\uDE41️ " + message);
     }
 }

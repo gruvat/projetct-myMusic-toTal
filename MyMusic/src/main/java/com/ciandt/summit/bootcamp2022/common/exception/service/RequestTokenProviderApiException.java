@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class RequestTokenProviderApiException extends RuntimeException {
 
     public RequestTokenProviderApiException(String message) {
-        super(message);
-        log.error(message);
+        super(message + " \uD83D\uDEAB");
+        log.error("\uD83D\uDEAB " + message);
     }
 
 }
