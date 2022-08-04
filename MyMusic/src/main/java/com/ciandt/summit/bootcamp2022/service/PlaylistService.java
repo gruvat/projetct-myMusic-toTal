@@ -11,4 +11,6 @@ public interface PlaylistService {
     boolean checkIfMusicNotExists(String musicId);
 
     void addMusicsToPlaylist(Set<Music> musics, String playlistId);
+
+    Set<Music> findMusicsByPlaylistId(String playlistId);
 }

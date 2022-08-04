@@ -37,7 +37,7 @@ public class MusicController {
             @ApiResponse(responseCode = "400", description = "Not enough characters"),
             @ApiResponse(responseCode = "401", description = "Not authorized")
     })
-    public ResponseEntity<ResponseData<Set<Music>>> findMusics (
+    public ResponseEntity<ResponseData<Set<Music>>> getMusics (
             @RequestParam(name = "filter", required = false) final String filter) {
         Set<Music> result;
         if (filter == null) {

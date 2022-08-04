@@ -1,6 +1,7 @@
 package com.ciandt.summit.bootcamp2022.service;
 
 import com.ciandt.summit.bootcamp2022.common.exception.service.MusicNotFoundException;
+import com.ciandt.summit.bootcamp2022.common.exception.service.MusicsAndArtistsNotFoundException;
 import com.ciandt.summit.bootcamp2022.common.exception.service.PlaylistNotFoundException;
 import com.ciandt.summit.bootcamp2022.entity.Music;
 import com.ciandt.summit.bootcamp2022.entity.Playlist;
@@ -55,4 +56,18 @@ public class PlaylistServiceImpl implements PlaylistService {
         log.info("Musics saved to playlist");
     }
 
+    @Override
+    public Set<Music> findMusicsByPlaylistId(String playlistId) {
+        Playlist playlist = findPlaylistById(playlistId);
+
+        Set<Music> musics = musicRepository.findMusicsByPlaylistId(playlist.getId());
+        if (musics.isEmpty()) {
+            log.info("No results for playlist with Id {}", playlistId);
+            throw new MusicsAndArtistsNotFoundException();
+        }
+
+        log.info("Successful search");
+
+        return musics;
+    }
 }
