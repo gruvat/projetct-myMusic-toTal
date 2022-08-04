@@ -1,6 +1,9 @@
 package com.ciandt.summit.bootcamp2022.service;
 
-import org.junit.jupiter.api.Assertions;
+import com.ciandt.summit.bootcamp2022.common.exception.service.InvalidParameterException;
+import com.ciandt.summit.bootcamp2022.common.exception.service.MusicsAndArtistsNotFoundException;
+import com.ciandt.summit.bootcamp2022.entity.Music;
+import com.ciandt.summit.bootcamp2022.repository.MusicRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
