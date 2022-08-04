@@ -1,6 +1,7 @@
 package com.ciandt.summit.bootcamp2022.controller;
 
 import com.ciandt.summit.bootcamp2022.common.request.RequestMusicsData;
+import com.ciandt.summit.bootcamp2022.common.response.ResponseData;
 import com.ciandt.summit.bootcamp2022.controller.dto.MusicDto;
 import com.ciandt.summit.bootcamp2022.entity.Music;
 import com.ciandt.summit.bootcamp2022.service.PlaylistService;
@@ -37,7 +38,7 @@ public class PlaylistController {
             @ApiResponse(responseCode = "401", description = "Not authorized")
     })
     public ResponseEntity<String> postMusicsToPlaylist(@PathVariable final String playlistId,
-                                                  @RequestBody @Valid RequestMusicsData musicsData) {
+                                                       @RequestBody @Valid RequestMusicsData musicsData) {
 
         Set<Music> musics = new HashSet<>();
 
@@ -51,6 +52,26 @@ public class PlaylistController {
         log.info("Musics added to playlist");
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/{playlistId}/musics")
+    @Operation(summary = "Find musics by playlistId",
+            description = "Find all musics in the playlist "
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operation success"),
+            @ApiResponse(responseCode = "204", description = "No results"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Not authorized")
+    })
+    public ResponseEntity<ResponseData<Set<Music>>> getMusicsFromPlaylistId(
+            @PathVariable final String playlistId) {
+        Set<Music> result;
+
+        result = playlistService.findMusicsByPlaylistId(playlistId);
+        log.info("FindMusics With playlistId {}, total rows: {}", playlistId, result.size());
+
+        return ResponseEntity.ok(ResponseData.of(result));
     }
 
 }
