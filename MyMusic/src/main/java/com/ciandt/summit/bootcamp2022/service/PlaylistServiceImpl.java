@@ -25,7 +25,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     public Playlist findPlaylistById(String playlistId) {
-        log.info("Checking if playlist with Id " + playlistId + " exists");
+        log.info("\uD83D\uDCAC  Checking if playlist with Id " + playlistId + " exists");
         return playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new PlaylistNotFoundException("Playlist with Id "
                         + playlistId + " not found"));
@@ -33,7 +33,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     public boolean checkIfMusicNotExists(String musicId) {
-        log.info("Checking if music with Id " + musicId + " exists");
+        log.info("\uD83D\uDCAC  Checking if music with Id " + musicId + " exists");
         return musicRepository.findById(musicId).isEmpty();
     }
 
@@ -50,10 +50,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 
         playlist.getMusics().addAll(musics);
-        log.info("All musics added to playlist");
+        log.info("\uD83D\uDFE2️ All musics added to playlist");
 
         playlistRepository.save(playlist);
-        log.info("Musics saved to playlist");
+        log.info("\uD83D\uDFE2️ Musics saved to playlist");
     }
 
     @Override
@@ -62,11 +62,11 @@ public class PlaylistServiceImpl implements PlaylistService {
 
         Set<Music> musics = musicRepository.findMusicsByPlaylistId(playlist.getId());
         if (musics.isEmpty()) {
-            log.info("No results for playlist with Id {}", playlistId);
+            log.info("\uD83D\uDD34  No results for playlist with Id {}", playlistId);
             throw new MusicsAndArtistsNotFoundException();
         }
 
-        log.info("Successful search");
+        log.info("\uD83D\uDFE2️ Successful search");
 
         return musics;
     }

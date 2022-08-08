@@ -42,10 +42,10 @@ public class MusicController {
         Set<Music> result;
         if (filter == null) {
             result = musicService.searchAllMusics();
-            log.info("FindMusics Null filter");
+            log.info("\uD83D\uDFE2️ FindMusics Null filter");
         } else {
             result = musicService.searchMusicsByFilter(filter);
-            log.info("FindMusics With filter {}, total rows: {}", filter, result.size());
+            log.info("\uD83D\uDFE2️ FindMusics With filter {}, total rows: {}", filter, result.size());
         }
 
         return ResponseEntity.ok(ResponseData.of(result));

@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NO_CONTENT)
 public class MusicsAndArtistsNotFoundException extends RuntimeException {
     public MusicsAndArtistsNotFoundException() {
-        log.info("No content");
+        log.info("\uD83D\uDE41 No content");
     }
 }

@@ -21,7 +21,7 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public boolean isAValidSearch(String filter) {
 
-        log.info("Checking if filter length is bigger than 2");
+        log.info("\uD83D\uDCAC  Checking if filter length is bigger than 2");
 
         return filter.length() >= 2;
     }
@@ -30,24 +30,24 @@ public class MusicServiceImpl implements MusicService {
     @Cacheable(value = "music_cache")
     public Set<Music> searchMusicsByFilter(String filter) {
 
-        log.info("Entering music search by filter");
+        log.info("\uD83D\uDCAC  Entering music search by filter");
 
         if(isAValidSearch(filter)){
             Set<Music> musics = musicRepository.findMusicsByMusicsAndArtistsName(filter.toLowerCase());
 
             if (musics.isEmpty()) {
 
-                log.info("No results for filter {}", filter);
+                log.info("\uD83D\uDD34  No results for filter {}", filter);
 
                 throw new MusicsAndArtistsNotFoundException();
             }
 
-            log.info("Successful search");
+            log.info("\uD83D\uDFE2️ Successful search");
 
             return musics;
         }
 
-        log.error("Filter is invalid");
+        log.error("\uD83D\uDD34  Filter is invalid");
 
         throw new InvalidParameterException("The filter must have at least 2 characters.");
 
@@ -57,19 +57,19 @@ public class MusicServiceImpl implements MusicService {
     @Cacheable(value = "music_cache")
     public Set<Music> searchAllMusics(){
 
-        log.info("Entering music search without filter");
+        log.info("\uD83D\uDCAC  Entering music search without filter");
 
         Set<Music> allMusics = musicRepository.findMusicsByMusicsAndArtistsName("");
 
         if(allMusics.isEmpty()){
 
-            log.info("There are no musics in the database");
+            log.info("\uD83D\uDD34  There are no musics in the database");
 
             throw new MusicsAndArtistsNotFoundException();
 
         }
 
-        log.info("Successful search");
+        log.info("\uD83D\uDFE2️ Successful search");
 
         return allMusics;
     }

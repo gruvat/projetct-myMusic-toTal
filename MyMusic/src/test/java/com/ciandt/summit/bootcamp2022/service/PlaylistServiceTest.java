@@ -45,7 +45,7 @@ public class PlaylistServiceTest {
                 () -> playlistService.findPlaylistById(id),
                 () -> "Should throw a PlaylistNotFoundException");
 
-        assertEquals("Playlist with Id " + id + " not found",
+        assertEquals("Playlist with Id " + id + " not found \uD83D\uDE41",
                 exception.getMessage(),
                 () -> "Should return exception message");
     }
@@ -136,7 +136,7 @@ public class PlaylistServiceTest {
                 () -> playlistService.addMusicsToPlaylist(musics, playlistId),
                 () -> "Should throw a MusicNotFoundException");
 
-        assertEquals("Music with Id " + musicId + " not found",
+        assertEquals("Music with Id " + musicId + " not found \uD83D\uDE41",
                 exception.getMessage(),
                 () -> "Should return exception message");
     }
@@ -162,7 +162,7 @@ public class PlaylistServiceTest {
 
         assertEquals(expectedSize, actualSize);
 
-        assertEquals("Music with Id " + nonExistingId + " not found",
+        assertEquals("Music with Id " + nonExistingId + " not found \uD83D\uDE41",
                 exception.getMessage(),
                 () -> "Should return exception message");
     }
@@ -178,7 +178,7 @@ public class PlaylistServiceTest {
                 () -> playlistService.addMusicsToPlaylist(musics, playlistId),
                 () -> "Should throw a PlaylistNotFoundException");
 
-        assertEquals("Playlist with Id " + playlistId + " not found",
+        assertEquals("Playlist with Id " + playlistId + " not found \uD83D\uDE41",
                 exception.getMessage(),
                 () -> "Should return exception message");
     }
