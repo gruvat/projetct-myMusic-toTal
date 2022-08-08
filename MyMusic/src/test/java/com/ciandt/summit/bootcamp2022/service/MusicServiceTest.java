@@ -40,7 +40,7 @@ public class MusicServiceTest {
     @ValueSource(strings = {"A", "a", " ", ""})
     public void testSearchWithInvalidFilter(String filter) {
         Exception e = assertThrows(InvalidParameterException.class, () -> musicService.searchMusicsByFilter(filter));
-        assertEquals("The filter must have at least 2 characters.", e.getMessage());
+        assertEquals("The filter must have at least 2 characters.\uD83D\uDD34", e.getMessage());
     }
 
     @DisplayName(value = "Check if there are no results for unmatching filter")
