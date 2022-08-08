@@ -145,7 +145,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/musics?filter=a hard day's night",
+							"raw": "http://localhost:8081/api/musics?filter=björk",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -158,7 +158,7 @@
 							"query": [
 								{
 									"key": "filter",
-									"value": "a hard day's night"
+									"value": "björk"
 								}
 							]
 						}
@@ -172,7 +172,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": [\n        {\n            \"id\": \"323dade3-339a-4f94-86bb-6f806c4a6a2f\",\n            \"name\": \"A Hard Day's Night\",\n            \"artist\": {\n                \"id\": \"32844fdd-bb76-4c0a-9627-e34ddc9fd892\",\n                \"name\": \"The Beatles\"\n            }\n        },\n        {\n            \"id\": \"2359b747-2c71-4acf-b2ba-1e43510e4230\",\n            \"name\": \"Cold Irons Bound\",\n            \"artist\": {\n                \"id\": \"716923cd-5fd3-4421-8c8e-bafed1f95ae8\",\n                \"name\": \"Bob Dylan\"\n            }\n        }\n    ]\n}",
+							"raw": "{\n    \"data\": [\n         {\n            \"id\": \"b1dcbbc8-3d82-4f2a-837e-9bef0fb78342\",\n            \"name\": \"\\\"Let's Get Chinese Eyes\\\"\",\n            \"artist\": {\n                \"id\": \"911e1523-5dbc-4c8d-b4be-c83b3b5576af\",\n                \"name\": \"Björk\"\n            }\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -213,6 +213,29 @@
 								"playlists",
 								"92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed",
 								"musics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteMusicFromPlaylistByPlaylistId",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/playlists/92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed/musics/c3a495ad-dcf2-4bb6-a937-fe1552c7b69d",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"playlists",
+								"92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed",
+								"musics",
+								"c3a495ad-dcf2-4bb6-a937-fe1552c7b69d"
 							]
 						}
 					},

@@ -16,6 +16,6 @@ public interface PlaylistService {
 
     Music findMusicInPlaylistByMusicId(Playlist playlist, String musicId);
 
-    void deleteMusicFromPlaylistByMusicId(String playlistId, String musicId);
+    void removeMusicFromPlaylistByMusicId(String playlistId, String musicId);
 
 }
