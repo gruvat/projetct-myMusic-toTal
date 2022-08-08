@@ -54,16 +54,21 @@ public class PlaylistServiceTest {
     @ParameterizedTest(name = "With Id {0}")
     @ValueSource(strings = {"67f5976c-eb1e-404e-8220-2c2a8a23be47", "049364ca-973f-4db9-ae41-9c183d6aa22a"})
     public void testIfMusicExistsById(String id) {
-        assertFalse(playlistService.checkIfMusicNotExists(id),
-                () -> "Should return false if music exists");
+        assertNotNull(playlistService.findMusicById(id),
+                () -> "Should return music if music exists");
     }
 
     @DisplayName(value = "Check if music doesn't exist")
     @ParameterizedTest(name = "With Id {0}")
     @ValueSource(strings = {"INVALIDO", "5555"})
     public void testIfMusicNotExistsById(String id) {
-        assertTrue(playlistService.checkIfMusicNotExists(id),
-                () -> "Should return true if music doesn't exist");
+        MusicNotFoundException exception = assertThrows(MusicNotFoundException.class,
+                () -> playlistService.findMusicById(id),
+                () -> "Should throw a MusicNotFoundException");
+
+        assertEquals("Music with Id " + id + " not found \uD83D\uDE41",
+                exception.getMessage(),
+                () -> "Should return exception message");
     }
 
     @DisplayName(value = "Add music to playlist")

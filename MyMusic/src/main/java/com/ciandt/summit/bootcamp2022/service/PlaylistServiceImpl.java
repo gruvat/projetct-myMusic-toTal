@@ -1,6 +1,7 @@
 package com.ciandt.summit.bootcamp2022.service;
 
 import com.ciandt.summit.bootcamp2022.common.exception.service.MusicNotFoundException;
+import com.ciandt.summit.bootcamp2022.common.exception.service.MusicNotFoundInPlaylistException;
 import com.ciandt.summit.bootcamp2022.common.exception.service.MusicsAndArtistsNotFoundException;
 import com.ciandt.summit.bootcamp2022.common.exception.service.PlaylistNotFoundException;
 import com.ciandt.summit.bootcamp2022.entity.Music;
@@ -32,22 +33,18 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public boolean checkIfMusicNotExists(String musicId) {
+    public Music findMusicById(String musicId) {
         log.info("\uD83D\uDCAC  Checking if music with Id " + musicId + " exists");
-        return musicRepository.findById(musicId).isEmpty();
+        return musicRepository.findById(musicId).stream().findFirst()
+                .orElseThrow(() -> new MusicNotFoundException("Music with Id "
+                + musicId + " not found"));
     }
 
     @Override
     public void addMusicsToPlaylist(Set<Music> musics, String playlistId) {
         Playlist playlist = findPlaylistById(playlistId);
 
-        musics.stream()
-                .filter(m -> checkIfMusicNotExists(m.getId()))
-                .findAny()
-                .ifPresent(m -> {
-                    throw new MusicNotFoundException("Music with Id " + m.getId() + " not found");
-                });
-
+        musics.forEach(m -> findMusicById(m.getId()));
 
         playlist.getMusics().addAll(musics);
         log.info("\uD83D\uDFE2️ All musics added to playlist");
@@ -70,4 +67,26 @@ public class PlaylistServiceImpl implements PlaylistService {
 
         return musics;
     }
+
+    @Override
+    public Music findMusicInPlaylistByMusicId(Playlist playlist, String musicId) {
+        log.info("\uD83D\uDCAC  Checking if music with Id " + musicId +
+                " exists in playlist with Id " + playlist.getId());
+        return playlist.getMusics().stream().filter(m -> m.getId().equals(musicId))
+                .findFirst().orElseThrow(() -> new MusicNotFoundInPlaylistException("Music with id "
+                        + musicId + " is not in the playlist."));
+    }
+
+    @Override
+    public void deleteMusicFromPlaylistByMusicId(String playlistId, String musicId) {
+        Playlist playlist = findPlaylistById(playlistId);
+        Music music = findMusicById(musicId);
+
+        music = findMusicInPlaylistByMusicId(playlist, music.getId());
+
+        playlist.getMusics().remove(music);
+        playlistRepository.save(playlist);
+        log.info("\uD83D\uDFE2️ Successful removal");
+    }
+
 }
