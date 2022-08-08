@@ -78,7 +78,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public void deleteMusicFromPlaylistByMusicId(String playlistId, String musicId) {
+    public void removeMusicFromPlaylistByMusicId(String playlistId, String musicId) {
         Playlist playlist = findPlaylistById(playlistId);
         Music music = findMusicById(musicId);
 

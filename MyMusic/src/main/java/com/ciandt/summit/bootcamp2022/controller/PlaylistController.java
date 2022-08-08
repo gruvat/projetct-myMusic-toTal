@@ -74,4 +74,22 @@ public class PlaylistController {
         return ResponseEntity.ok(ResponseData.of(result));
     }
 
+    @DeleteMapping("/{playlistId}/musics/{musicId}")
+    @Operation(summary = "Remove music playlist",
+            description = "Remove music from a playlist"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "No content"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "401", description = "Not authorized")
+    })
+    public ResponseEntity<String> deleteMusicFromPlaylist(@PathVariable final String playlistId,
+                                                          @PathVariable final String musicId) {
+
+        playlistService.removeMusicFromPlaylistByMusicId(playlistId, musicId);
+        log.info("\uD83D\uDFE2️ Music removed from playlist");
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }
