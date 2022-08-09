@@ -6,7 +6,12 @@ import com.ciandt.summit.bootcamp2022.entity.Artist;
 import com.ciandt.summit.bootcamp2022.entity.Music;
 import com.ciandt.summit.bootcamp2022.repository.MusicRepository;
 
-import org.junit.jupiter.api.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
@@ -72,6 +77,7 @@ public class MusicServiceTest {
         private Music musicAndArtistValidMusic;
         private Artist musicAndArtistValidArtist;
         private  Set<Music> musicsFound = new HashSet<>();
+
         @BeforeEach
         void setUp() {
             musicAndArtistValidMusic = new Music("1", "valid music");
@@ -80,6 +86,7 @@ public class MusicServiceTest {
 
             musicsFound.add(musicAndArtistValidMusic);
         }
+
         @DisplayName(value = "Check if search all musics is successful when there are results")
         @Test
         void testSuccessfulSearchAllMusics() {
@@ -87,7 +94,7 @@ public class MusicServiceTest {
             musicService.searchAllMusics();
             verify(musicRepositoryMocked).findMusicsByMusicsAndArtistsName("");
         }
-        //is this it?
+
         @DisplayName(value = "Check if search by filter is successful when there are results")
         @ParameterizedTest
         @ValueSource(strings = {"teste"})
