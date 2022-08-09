@@ -33,6 +33,8 @@ public class TokenServiceImpl implements TokenService {
         TokenDTO tokenAuthorizerDto = new TokenDTO(credentials.get(0), credentials.get(1));
 
         ResponseEntity<String> responseTokenProvider = getApiAuthenticationResponse(tokenAuthorizerDto);
+        
+        log.info("\uD83D\uDFE2️ Auth response successful");
 
         log.info("\uD83D\uDCAC  Checking if authorization was succeeded");
         return Objects.equals(responseTokenProvider.getBody(), "ok");
@@ -72,7 +74,6 @@ public class TokenServiceImpl implements TokenService {
             final String URI = this.TOKEN_PROVIDER_URL + this.TOKEN_PROVIDER_AUTHENTICATION_PATH;
             HttpEntity<TokenDTO> bodyRequestTokenApi = new HttpEntity<>(tokenDto);
 
-            log.info("\uD83D\uDFE2️ Auth response successful");
             return postRequestAndResponseWithString(URI, bodyRequestTokenApi);
         } catch(HttpClientErrorException e) {
             throw new CredentialsException("Credentials not authorized");
@@ -85,7 +86,7 @@ public class TokenServiceImpl implements TokenService {
 
     private ResponseEntity<String> postRequestAndResponseWithString(String uri, HttpEntity<?> body) {
         RestTemplate restTemplate = new RestTemplate();
-        log.info("\uD83D\uDCAC  Returning conversion to String");
+        log.info("\uD83D\uDCAC  Posting request and converting response to String");
         return restTemplate.postForEntity(uri, body, String.class);
     }
 
