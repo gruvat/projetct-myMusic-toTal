@@ -3,9 +3,11 @@ package com.ciandt.summit.bootcamp2022.service;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import com.ciandt.summit.bootcamp2022.common.exception.service.CredentialsExcept
 import com.ciandt.summit.bootcamp2022.common.exception.service.RequestTokenProviderApiException;
 import com.ciandt.summit.bootcamp2022.security.Token.TokenDTO;
 
+@Log4j2
 @Service
 public class TokenServiceImpl implements TokenService {
 
@@ -25,18 +28,26 @@ public class TokenServiceImpl implements TokenService {
 
     public boolean isAuthorized(HttpServletRequest request) {
         List<String> credentials = getCredentials(request);
-        TokenDTO tokenAuthorizerDto = new TokenDTO(credentials.get(0), credentials.get(1)); // name and token
+
+        log.info("\uD83D\uDCAC  Getting name and token from request");
+        TokenDTO tokenAuthorizerDto = new TokenDTO(credentials.get(0), credentials.get(1));
 
         ResponseEntity<String> responseTokenProvider = getApiAuthenticationResponse(tokenAuthorizerDto);
+        
+        log.info("\uD83D\uDFE2️ Auth response successful");
 
-        return responseTokenProvider.getBody().equals("ok");
+        log.info("\uD83D\uDCAC  Checking if authorization was succeeded");
+        return Objects.equals(responseTokenProvider.getBody(), "ok");
     }
     
     private List<String> getCredentials(HttpServletRequest request) {
         try {
+            log.info("\uD83D\uDCAC  Getting headers from request");
             String authorizationHeader = request.getHeader("Authorization");
 
             String base64Credentials = authorizationHeader.substring("Basic".length()).trim();
+
+            log.info("\uD83D\uDCAC  Decoding credentials");
             byte[] credentialsDecoded = Base64.getDecoder().decode(base64Credentials);
 
             String credentials = new String(credentialsDecoded, StandardCharsets.UTF_8);
@@ -44,6 +55,7 @@ public class TokenServiceImpl implements TokenService {
             String[] credentialsArray = credentials.split(":");
             
             if (credentialsArray.length == 2 && !(credentialsArray[0].isEmpty() || credentialsArray[1].isEmpty())) {
+                log.info("\uD83D\uDFE2️ Getting credentials from request successfully");
                 return List.of(credentialsArray);
             } else {
                 throw new CredentialsException("Credentials missing");
@@ -58,13 +70,14 @@ public class TokenServiceImpl implements TokenService {
 
     private ResponseEntity<String> getApiAuthenticationResponse(TokenDTO tokenDto) {
         try {
+            log.info("\uD83D\uDCAC  Getting authorization URI");
             final String URI = this.TOKEN_PROVIDER_URL + this.TOKEN_PROVIDER_AUTHENTICATION_PATH;
             HttpEntity<TokenDTO> bodyRequestTokenApi = new HttpEntity<>(tokenDto);
 
             return postRequestAndResponseWithString(URI, bodyRequestTokenApi);
-        } catch(HttpClientErrorException e) { // 4XX
+        } catch(HttpClientErrorException e) {
             throw new CredentialsException("Credentials not authorized");
-        } catch(HttpServerErrorException e) { // 5XX
+        } catch(HttpServerErrorException e) {
             throw new RequestTokenProviderApiException("Invalid credentials");
         } catch (Exception e) {
             throw new RequestTokenProviderApiException("TokenProvider Api can't be reached");
@@ -73,6 +86,7 @@ public class TokenServiceImpl implements TokenService {
 
     private ResponseEntity<String> postRequestAndResponseWithString(String uri, HttpEntity<?> body) {
         RestTemplate restTemplate = new RestTemplate();
+        log.info("\uD83D\uDCAC  Posting request and converting response to String");
         return restTemplate.postForEntity(uri, body, String.class);
     }
 

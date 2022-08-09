@@ -8,9 +8,14 @@ import java.util.Set;
 public interface PlaylistService {
     Playlist findPlaylistById(String playlistId);
 
-    boolean checkIfMusicNotExists(String musicId);
+    Music findMusicById(String musicId);
 
     void addMusicsToPlaylist(Set<Music> musics, String playlistId);
 
     Set<Music> findMusicsByPlaylistId(String playlistId);
+
+    Music findMusicInPlaylistByMusicId(Playlist playlist, String musicId);
+
+    void removeMusicFromPlaylistByMusicId(String playlistId, String musicId);
+
 }
