@@ -1,8 +1,6 @@
 package com.ciandt.summit.bootcamp2022.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -14,6 +12,7 @@ import java.util.Set;
 @Table(name = "Playlists")
 @Getter
 @NoArgsConstructor
+@RequiredArgsConstructor
 @EqualsAndHashCode
 public class Playlist implements Serializable {
 
@@ -21,6 +20,7 @@ public class Playlist implements Serializable {
 
     @Id
     @Column(name = "Id")
+    @NonNull
     private String id;
 
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -30,6 +30,6 @@ public class Playlist implements Serializable {
             joinColumns = @JoinColumn(name = "PlaylistId"),
             inverseJoinColumns = @JoinColumn(name = "MusicaId")
     )
-    @EqualsAndHashCode.Exclude private Set<Music> musics;
+    @EqualsAndHashCode.Exclude @Setter private Set<Music> musics;
 
 }

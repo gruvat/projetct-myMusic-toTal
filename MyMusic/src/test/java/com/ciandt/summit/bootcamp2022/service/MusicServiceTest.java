@@ -2,16 +2,18 @@ package com.ciandt.summit.bootcamp2022.service;
 
 import com.ciandt.summit.bootcamp2022.common.exception.service.InvalidParameterException;
 import com.ciandt.summit.bootcamp2022.common.exception.service.MusicsAndArtistsNotFoundException;
+import com.ciandt.summit.bootcamp2022.entity.Artist;
 import com.ciandt.summit.bootcamp2022.entity.Music;
 import com.ciandt.summit.bootcamp2022.repository.MusicRepository;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoSettings;
 
-import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,42 +21,80 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@Transactional
+@MockitoSettings
 public class MusicServiceTest {
-    @Autowired
-    private MusicService musicService;
-    @Autowired
-    private MusicRepository musicRepository;
+    @Mock
+    private MusicRepository musicRepositoryMocked;
+    @InjectMocks
+    private MusicServiceImpl musicService;
+
+    @AfterEach
+    void resetMocking() {
+        Mockito.reset(musicRepositoryMocked);
+    }
 
     @DisplayName(value = "Check if valid filter is accepted")
     @ParameterizedTest(name = "filter {0}")
     @ValueSource(strings = {"hi", "Us", "HIGHER", "Sweet Child O' Mine"})
-    public void testIfIsAValidParameter(String filter) {
+    void testIfIsAValidParameter(String filter) {
         assertTrue(musicService.isAValidSearch(filter));
     }
 
     @DisplayName(value = "Check if search throws exception to invalid filter")
     @ParameterizedTest(name = "filter {0}")
     @ValueSource(strings = {"A", "a", " ", ""})
-    public void testSearchWithInvalidFilter(String filter) {
+    void testSearchWithInvalidFilter(String filter) {
+        //Since the method must throw an exception before using the repository, the mock is not needed
         Exception e = assertThrows(InvalidParameterException.class, () -> musicService.searchMusicsByFilter(filter));
         assertEquals("The filter must have at least 2 characters.\uD83D\uDD34", e.getMessage());
     }
 
-    @DisplayName(value = "Check if there are no results for unmatching filter")
-    @ParameterizedTest(name = "filter {0}")
-    @ValueSource(strings = {"agheurigwheuiwtrh"})
-    public void testSearchWithNoMatchingFilter(String filter) {
+    @DisplayName(value = "Check if throws exception to no matching filter")
+    @ParameterizedTest
+    @ValueSource(strings = {"teste"})
+    void testSearchWithNoMatchingFilter(String filter) {
+        when(musicRepositoryMocked.findMusicsByMusicsAndArtistsName(filter)).thenReturn(new HashSet<>());
         assertThrowsExactly(MusicsAndArtistsNotFoundException.class, () -> musicService.searchMusicsByFilter(filter));
     }
 
-    @DisplayName(value = "Check if SearchAllMusics returns all musics")
+    @DisplayName(value = "Check if exception is thrown for empty database")
     @Test
-    public void testSearchReturnAllMusics() {
-        Set<Music> AllMusicsTest = new HashSet<>(musicRepository.findAll());
-        Set<Music> MusicSearchAllTest = musicService.searchAllMusics();
-        assertEquals(AllMusicsTest , MusicSearchAllTest);
+    void testSearchAllMusicsThrowsExceptionWhenEmpty() {
+        when(musicRepositoryMocked.findMusicsByMusicsAndArtistsName("")).thenReturn(new HashSet<>());
+        assertThrowsExactly(MusicsAndArtistsNotFoundException.class, () -> musicService.searchAllMusics());
+    }
+    @Nested
+    @DisplayName(value = "Testing successful searches")
+    class testsSuccessfulSeaches {
+        private Music musicAndArtistValidMusic;
+        private Artist musicAndArtistValidArtist;
+        private  Set<Music> musicsFound = new HashSet<>();
+        @BeforeEach
+        void setUp() {
+            musicAndArtistValidMusic = new Music("1", "valid music");
+            musicAndArtistValidArtist = new Artist("1", "valid artist");
+            musicAndArtistValidMusic.setArtist(musicAndArtistValidArtist);
+
+            musicsFound.add(musicAndArtistValidMusic);
+        }
+        @DisplayName(value = "Check if search all musics is successful when there are results")
+        @Test
+        void testSuccessfulSearchAllMusics() {
+            when(musicRepositoryMocked.findMusicsByMusicsAndArtistsName("")).thenReturn(musicsFound);
+            musicService.searchAllMusics();
+            verify(musicRepositoryMocked).findMusicsByMusicsAndArtistsName("");
+        }
+        //is this it?
+        @DisplayName(value = "Check if search by filter is successful when there are results")
+        @ParameterizedTest
+        @ValueSource(strings = {"teste"})
+        void testSuccessfulSearchByFilter(String filter) {
+            when(musicRepositoryMocked.findMusicsByMusicsAndArtistsName(filter)).thenReturn(musicsFound);
+            musicService.searchMusicsByFilter(filter);
+            verify(musicRepositoryMocked).findMusicsByMusicsAndArtistsName(filter);
+        }
     }
 }
