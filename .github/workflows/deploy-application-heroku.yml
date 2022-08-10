@@ -11,7 +11,7 @@ jobs:
 
     environment:
       name: MyMusic Application
-      url: https://mymusic-application.herokuapp.com/swagger-ui/index.html
+      url: https://mymusic-application.herokuapp.com/mymusic/swagger-ui/index.html
 
     steps:
     - uses: actions/checkout@v3
