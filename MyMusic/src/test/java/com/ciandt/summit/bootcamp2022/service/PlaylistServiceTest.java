@@ -1,191 +1,232 @@
 package com.ciandt.summit.bootcamp2022.service;
 
 import com.ciandt.summit.bootcamp2022.common.exception.service.MusicNotFoundException;
+import com.ciandt.summit.bootcamp2022.common.exception.service.MusicNotFoundInPlaylistException;
+import com.ciandt.summit.bootcamp2022.common.exception.service.MusicsAndArtistsNotFoundException;
 import com.ciandt.summit.bootcamp2022.common.exception.service.PlaylistNotFoundException;
+import com.ciandt.summit.bootcamp2022.entity.Artist;
 import com.ciandt.summit.bootcamp2022.entity.Music;
 import com.ciandt.summit.bootcamp2022.entity.Playlist;
 import com.ciandt.summit.bootcamp2022.repository.MusicRepository;
-import org.junit.jupiter.api.DisplayName;
+import com.ciandt.summit.bootcamp2022.repository.PlaylistRepository;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import javax.transaction.Transactional;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoSettings;
 
+
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@Transactional
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+
+@MockitoSettings
 public class PlaylistServiceTest {
+    @Mock
+    private MusicRepository musicRepositoryMocked;
 
-    @Autowired
-    private PlaylistService playlistService;
+    @Mock
+    private PlaylistRepository playlistRepositoryMocked;
 
-    @Autowired
-    private MusicRepository musicRepository;
+    @InjectMocks
+    private PlaylistServiceImpl playlistService;
 
-    @DisplayName(value = "Check if playlist exists")
+    @AfterEach
+    void resetMocking() {
+        Mockito.reset(musicRepositoryMocked, playlistRepositoryMocked);
+    }
+
+    @DisplayName(value = "Check if findPlaylistById search by id")
     @ParameterizedTest(name = "With Id {0}")
-    @ValueSource(strings = {"a39926f4-6acb-4497-884f-d4e5296ef652", "b54c99b2-1816-47d3-b41c-9f1d070462ab"})
-    public void testIfPlaylistExistsById(String id) {
-        Playlist playlist = playlistService.findPlaylistById(id);
-        assertEquals(id, playlist.getId(), () -> "Should return playlist with Id " + id);
+    @ValueSource(strings = {"1", "2"})
+    void testIfPlaylistExistsById(String id) {
+        when(playlistRepositoryMocked.findById(id)).thenReturn(Optional.of(new Playlist()));
+
+        playlistService.findPlaylistById(id);
+        verify(playlistRepositoryMocked, times(1)).findById(id);
     }
 
-    @DisplayName(value = "Check if playlist doesn't exist")
+    @DisplayName(value = "Check if findPlaylistById throws exception when there is no result")
     @ParameterizedTest(name = "With Id {0}")
-    @ValueSource(strings = {"INVALIDO", "1290"})
-    public void testIfPlaylistNotExistsById(String id) {
-        PlaylistNotFoundException exception = assertThrows(PlaylistNotFoundException.class,
-                () -> playlistService.findPlaylistById(id),
-                () -> "Should throw a PlaylistNotFoundException");
-
-        assertEquals("Playlist with Id " + id + " not found \uD83D\uDE41",
-                exception.getMessage(),
-                () -> "Should return exception message");
+    @ValueSource(strings = {"notExistent"})
+    void testIfPlaylistNotExistsById(String id) {
+        Exception e = assertThrowsExactly(PlaylistNotFoundException.class,
+                () -> playlistService.findPlaylistById(id));
+        assertEquals("Playlist with Id " + id + " not found \uD83D\uDE41", e.getMessage());
     }
 
-    @DisplayName(value = "Check if music exists")
+    @DisplayName(value = "Check if findMusicById search by id")
     @ParameterizedTest(name = "With Id {0}")
-    @ValueSource(strings = {"67f5976c-eb1e-404e-8220-2c2a8a23be47", "049364ca-973f-4db9-ae41-9c183d6aa22a"})
-    public void testIfMusicExistsById(String id) {
-        assertNotNull(playlistService.findMusicById(id),
-                () -> "Should return music if music exists");
+    @ValueSource(strings = {"1", "2"})
+    void testIfMusicExistsById(String id) {
+        when(musicRepositoryMocked.findById(id)).thenReturn(Optional.of(new Music()));
+
+        playlistService.findMusicById(id);
+        verify(musicRepositoryMocked, times(1)).findById(id);
     }
 
-    @DisplayName(value = "Check if music doesn't exist")
+    @DisplayName(value = "Check if findMusicById throws exception when there is no result")
     @ParameterizedTest(name = "With Id {0}")
-    @ValueSource(strings = {"INVALIDO", "5555"})
-    public void testIfMusicNotExistsById(String id) {
-        MusicNotFoundException exception = assertThrows(MusicNotFoundException.class,
-                () -> playlistService.findMusicById(id),
-                () -> "Should throw a MusicNotFoundException");
+    @ValueSource(strings = {"notExistent"})
+    void testIfMusicNotExistsById(String id) {
+        Exception e = assertThrowsExactly(MusicNotFoundException.class,
+                () -> playlistService.findMusicById(id));
 
-        assertEquals("Music with Id " + id + " not found \uD83D\uDE41",
-                exception.getMessage(),
-                () -> "Should return exception message");
-    }
-
-    @DisplayName(value = "Add music to playlist")
-    @ParameterizedTest(name = "With musicId {0} and playlistId {1}")
-    @CsvSource(value = {"05dcdf8c-ae9b-4d25-95c5-293e72db52b9|92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed"}
-            , delimiter = '|')
-    public void testAddOneMusicToPlaylist(String musicId, String playlistId) {
-        Set<Music> musics = new HashSet<>();
-        musicRepository.findById(musicId).ifPresent(musics::add);
-
-        playlistService.addMusicsToPlaylist(musics, playlistId);
-
-        Playlist playlist = playlistService.findPlaylistById(playlistId);
-        assertTrue(playlist.getMusics().containsAll(musics),
-                () -> "Should add the music to the playlist");
-    }
-
-    @DisplayName(value = "Don't add repeated music")
-    @ParameterizedTest(name = "With musicId {0} and playlistId {1}")
-    @CsvSource(value = {"c96b8f6f-4049-4e6b-8687-82e29c05b735|92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed"}
-            , delimiter = '|')
-    public void testDontAddRepeatedMusicToPlaylist(String musicId, String playlistId) {
-        Set<Music> musics = new HashSet<>();
-        musicRepository.findById(musicId).ifPresent(musics::add);
-        Playlist playlist = playlistService.findPlaylistById(playlistId);
-        int expectedSize = playlist.getMusics().size();
-
-        playlistService.addMusicsToPlaylist(musics, playlistId);
-
-        int actualSize = playlist.getMusics().size();
-        assertEquals(expectedSize, actualSize, () -> "Shouldn't add the music");
-    }
-
-    @DisplayName(value = "Add multiple musics, excluding repeated ones")
-    @ParameterizedTest(name = "To playlistId {0}")
-    @ValueSource(strings = "92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed")
-    public void testAddMultipleMusicsToOnePlaylistExcludingRepeatedOnes(String playlistId) {
-        Set<Music> newMusics = new HashSet<>(List.of(
-                musicRepository.getById("05dcdf8c-ae9b-4d25-95c5-293e72db52b9"),
-                musicRepository.getById("b4817918-4580-48f6-9467-3493f83fb6ea")));
-        Set<Music> repeatedMusics = new HashSet<>(List.of(
-                musicRepository.getById("c96b8f6f-4049-4e6b-8687-82e29c05b735"),
-                musicRepository.getById("793815a9-93b6-4b46-8763-d157df518511")
-        ));
-
-        Set<Music> allMusics = new HashSet<>();
-        allMusics.addAll(newMusics);
-        allMusics.addAll(repeatedMusics);
-
-        Playlist playlist = playlistService.findPlaylistById(playlistId);
-
-        int expectedSize = playlist.getMusics().size() + newMusics.size();
-        playlistService.addMusicsToPlaylist(allMusics, playlistId);
-        int actualSize = playlist.getMusics().size();
-
-        assertTrue(playlist.getMusics().containsAll(newMusics), () -> "Should add the new ones");
-        assertEquals(expectedSize, actualSize, () -> "Should add only the new ones");
-    }
-
-    @DisplayName(value = "Don't add non-existing music")
-    @ParameterizedTest(name = "With musicId {0} and playlistId {1}")
-    @CsvSource(value = {"blabla|92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed"}
-            , delimiter = '|')
-    public void testDontAddNonExistingMusicToPlaylist(String musicId, String playlistId) {
-        Music music = new Music(musicId, "");
-        Set<Music> musics = new HashSet<>();
-        musics.add(music);
-
-        MusicNotFoundException exception = assertThrows(MusicNotFoundException.class,
-                () -> playlistService.addMusicsToPlaylist(musics, playlistId),
-                () -> "Should throw a MusicNotFoundException");
-
-        assertEquals("Music with Id " + musicId + " not found \uD83D\uDE41",
-                exception.getMessage(),
-                () -> "Should return exception message");
-    }
-
-    @DisplayName(value = "Don't add multiple existent and non-existing musics")
-    @ParameterizedTest(name = "to playlistId {0}")
-    @ValueSource(strings = {"92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed"})
-    public void testDontAddMultipleExistingAndNonExistingMusicsToPlaylist(String playlistId) {
-        String nonExistingId = "blabla";
-
-        Set<Music> musics = new HashSet<>(List.of(
-                musicRepository.getById("05dcdf8c-ae9b-4d25-95c5-293e72db52b9"),
-                new Music(nonExistingId, "")));
-
-        Playlist playlist = playlistService.findPlaylistById(playlistId);
-        int expectedSize = playlist.getMusics().size();
-
-        MusicNotFoundException exception = assertThrows(MusicNotFoundException.class,
-                () -> playlistService.addMusicsToPlaylist(musics, playlistId),
-                () -> "Should throw a MusicNotFoundException");
-
-        int actualSize = playlist.getMusics().size();
-
-        assertEquals(expectedSize, actualSize);
-
-        assertEquals("Music with Id " + nonExistingId + " not found \uD83D\uDE41",
-                exception.getMessage(),
-                () -> "Should return exception message");
+        assertEquals("Music with Id " + id + " not found \uD83D\uDE41", e.getMessage());
     }
 
     @DisplayName(value = "Check if an exception is thrown when playlist")
-    @ParameterizedTest(name = "With Id {1} doesn't exist")
-    @CsvSource(value = {"05dcdf8c-ae9b-4d25-95c5-293e72db52b9|blabla"}
-            , delimiter = '|')
-    public void testDontAddMusicsWhenPlaylistNotExists(String musicId, String playlistId) {
-        Set<Music> musics = new HashSet<>(List.of(musicRepository.getById(musicId)));
+    @ParameterizedTest(name = "With Id {1} doesn't have musics")
+    @ValueSource(strings = {"1"})
+    void testFindMusicsByPlaylistIdWithoutMusics(String playlistId) {
+        when(playlistRepositoryMocked.findById(playlistId)).thenReturn(Optional.of(new Playlist()));
+        when(musicRepositoryMocked.findMusicsByPlaylistId(any())).thenReturn(new HashSet<>());
 
-        PlaylistNotFoundException exception = assertThrows(PlaylistNotFoundException.class,
-                () -> playlistService.addMusicsToPlaylist(musics, playlistId),
-                () -> "Should throw a PlaylistNotFoundException");
+        assertThrowsExactly(MusicsAndArtistsNotFoundException.class,
+                () -> playlistService.findMusicsByPlaylistId(playlistId));
+    }
 
-        assertEquals("Playlist with Id " + playlistId + " not found \uD83D\uDE41",
-                exception.getMessage(),
-                () -> "Should return exception message");
+    @Nested
+    @DisplayName(value = "Testing adding/removing/finding musics in playlist")
+    class testMethodAddRemoveAndFindMusicsInPlaylist {
+        private Music musicAndArtistValidMusic;
+        private Artist musicAndArtistValidArtist;
+        private Set<Music> musics;
+        private Playlist playlistEmpty;
+
+        @BeforeEach
+        void setUp() {
+            musicAndArtistValidMusic = new Music("1", "valid music");
+            musicAndArtistValidArtist = new Artist("1", "valid artist");
+            musicAndArtistValidMusic.setArtist(musicAndArtistValidArtist);
+
+            musics = new HashSet<>(Collections.singletonList(musicAndArtistValidMusic));
+
+            playlistEmpty = new Playlist("1");
+            playlistEmpty.setMusics(new HashSet<>());
+
+            Mockito.reset(musicRepositoryMocked, playlistRepositoryMocked);
+        }
+
+        @DisplayName(value = "Add music to playlist")
+        @ParameterizedTest(name = "With musicId {0} and playlistId {1}")
+        @CsvSource(value = {"1|1"}, delimiter = '|')
+        void testAddOneMusicToPlaylist(String musicId, String playlistId) {
+            when(musicRepositoryMocked.findById(musicId)).thenReturn(Optional.of(musicAndArtistValidMusic));
+            when(playlistRepositoryMocked.findById(playlistId)).thenReturn(Optional.of(playlistEmpty));
+
+            Playlist playlistExpected = new Playlist("1");
+            playlistExpected.setMusics(new HashSet<>(Collections.singletonList(musicAndArtistValidMusic)));
+
+            playlistService.addMusicsToPlaylist(musics, playlistId);
+
+            ArgumentCaptor<Playlist> playlistArgumentCaptor = ArgumentCaptor.forClass(Playlist.class);
+
+            verify(playlistRepositoryMocked).save(playlistArgumentCaptor.capture());
+
+            Playlist playlistCaptured = playlistArgumentCaptor.getValue();
+
+            assertEquals(playlistExpected, playlistCaptured);
+            assertEquals(playlistExpected.getMusics(), playlistCaptured.getMusics());
+        }
+
+        @DisplayName(value = "Don't add non-existing music")
+        @ParameterizedTest(name = "With musicId {0} and playlistId {1}")
+        @CsvSource(value = {"1|1"}, delimiter = '|')
+        void testDontAddNonExistingMusicToPlaylist(String musicId, String playlistId) {
+            when(musicRepositoryMocked.findById(anyString())).thenReturn(Optional.empty());
+            when(playlistRepositoryMocked.findById(playlistId)).thenReturn(Optional.of(playlistEmpty));
+
+            Exception e = assertThrowsExactly(MusicNotFoundException.class,
+                    () -> playlistService.addMusicsToPlaylist(musics, playlistId));
+
+            assertEquals("Music with Id " + musicId + " not found \uD83D\uDE41", e.getMessage());
+        }
+
+        @DisplayName(value = "Don't add multiple existent and non-existing musics")
+        @ParameterizedTest(name = "to playlistId {0}")
+        @ValueSource(strings = {"1"})
+        void testDontAddMultipleExistingAndNonExistingMusicsToPlaylist(String playlistId) {
+            when(musicRepositoryMocked.findById("1")).thenReturn(Optional.of(new Music()));
+            when(musicRepositoryMocked.findById("2")).thenReturn(Optional.empty());
+            when(playlistRepositoryMocked.findById(playlistId)).thenReturn(Optional.of(playlistEmpty));
+
+            musics.add(new Music("2", "not existent"));
+
+            Exception e = assertThrowsExactly(MusicNotFoundException.class,
+                    () -> playlistService.addMusicsToPlaylist(musics, playlistId));
+
+            assertEquals("Music with Id 2 not found \uD83D\uDE41", e.getMessage());
+            verify(playlistRepositoryMocked, times(0)).save(playlistEmpty);
+            assertTrue(playlistEmpty.getMusics().isEmpty());
+        }
+
+        @DisplayName(value = "Check if an exception is thrown when playlist")
+        @ParameterizedTest(name = "With Id {1} doesn't exist")
+        @ValueSource(strings = {"1"})
+        void testDontAddMusicsWhenPlaylistNotExists(String playlistId) {
+            when(playlistRepositoryMocked.findById(playlistId)).thenReturn(Optional.empty());
+
+            Exception e = assertThrowsExactly(PlaylistNotFoundException.class,
+                    () -> playlistService.addMusicsToPlaylist(musics, playlistId));
+
+            assertEquals("Playlist with Id " + playlistId + " not found \uD83D\uDE41",
+                    e.getMessage());
+        }
+
+        @DisplayName(value = "Check if findMusicsByPlaylistId returns musics")
+        @Test
+        void testfindMusicsByPlaylistIdSuccessful() {
+            playlistEmpty.setMusics(musics);
+            when(playlistRepositoryMocked.findById(any())).thenReturn(Optional.of(playlistEmpty));
+            when(musicRepositoryMocked.findMusicsByPlaylistId(playlistEmpty.getId())).thenReturn(playlistEmpty.getMusics());
+            assertEquals(musics,
+                    playlistService.findMusicsByPlaylistId(playlistEmpty.getId()));
+        }
+
+        @DisplayName(value = "Check if findMusicInPlaylistByMusicId returns music")
+        @Test
+        void testFindMusicInPlaylistByMusicId() {
+            playlistEmpty.setMusics(musics);
+            assertEquals(musicAndArtistValidMusic,
+                    playlistService.findMusicInPlaylistByMusicId(playlistEmpty, musicAndArtistValidMusic.getId()));
+        }
+        @DisplayName(value = "Check if an exception is thrown when playlist")
+        @ParameterizedTest(name = "With Id {1} doesn't have musics")
+        @ValueSource(strings = {"1"})
+        void testFindMusicsInPlayListByMusicIdException(String musicId) {
+            assertThrowsExactly(MusicNotFoundInPlaylistException.class,
+                    () -> playlistService.findMusicInPlaylistByMusicId(playlistEmpty, musicId));
+        }
+
+        @DisplayName(value = "Don't add multiple existent and non-existing musics")
+        @ParameterizedTest(name = "to playlistId {0}")
+        @ValueSource(strings = {"1"})
+        void testRemoveMusicById(String playlistId) {
+            when(musicRepositoryMocked.findById("1")).thenReturn(Optional.of(musicAndArtistValidMusic));
+            playlistEmpty.setMusics(musics);
+            when(playlistRepositoryMocked.findById(playlistId)).thenReturn(Optional.of(playlistEmpty));
+
+            playlistService.removeMusicFromPlaylistByMusicId(playlistId, musicAndArtistValidMusic.getId());
+
+            verify(playlistRepositoryMocked, times(1)).save(playlistEmpty);
+            assertTrue(playlistEmpty.getMusics().isEmpty());
+        }
     }
 
 }

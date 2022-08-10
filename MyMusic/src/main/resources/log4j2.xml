@@ -7,7 +7,7 @@
         <RollingFile
                 name="rollingFile"
                 fileName="logs/MyMusic.log"
-                filePattern="logs/MyMusic-%d{yyyy-MM-dd}.log"
+                filePattern="logs/archive/MyMusic-%d{yyyy-MM-dd}.log"
                 ignoreExceptions="false">
             <PatternLayout>
                 <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %m%n</Pattern>
