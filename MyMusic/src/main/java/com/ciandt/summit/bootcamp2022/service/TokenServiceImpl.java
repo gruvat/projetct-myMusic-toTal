@@ -78,7 +78,7 @@ public class TokenServiceImpl implements TokenService {
     private ResponseEntity<String> getApiAuthenticationResponse(TokenDTO tokenDto) {
         try {
             log.info("\uD83D\uDCAC  Getting authorization URI");
-            final String URI = final String URI = getAuthenticationPath();
+            final String URI = getAuthenticationPath();
             HttpEntity<TokenDTO> bodyRequestTokenApi = new HttpEntity<>(tokenDto);
 
             return postRequestAndResponseWithString(URI, bodyRequestTokenApi);
