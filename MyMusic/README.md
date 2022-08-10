@@ -27,48 +27,6 @@ essa segurança os endpoints criados devem exigir que as requisições recebidas
 contendo um token válido para responder a requisição. Para realizar a criação e geração do token, utilizar o serviço 
 disponbilizado junto com estrutura do projeto: token-provider-0.0.1-SNAPSHOT.jar.
 
-# token-provider
-
-Baixar o .jar a partir do link a seguir para compilar a aplicação de token 
-
-https://drive.google.com/file/d/17weBxIxAE0P1yimKTqBOfocIFi1VMkZQ/view?usp=sharing
-
-Para criação de token válidos utilizar o endpoint a seguir:
-
-```
-ENDPOINT: /api/v1/token
-METODO: POST
-BODY: 
-{ 
-    "data": {
-        "name": "fulano"
-    }
-}
-RETORNO: 201 Created
-{
-    "12321312321312"
-}
-```
-
-Para validação de token utilizar o endpoint a seguir:
-
-
-```
-ENDPOINT: /api/v1/token/authorizer
-METODO: POST
-BODY: 
-{ 
-    "data": {
-        "name": "fulano",
-        "token": "12321312321312"
-    }
-}
-RETORNO: 201 Created
-{
-    "ok"
-}
-```
-
 # Banco de dados
 
 Para auxiliar o desenvolvimento do API, a estrutura inicial conta com uma base de dados pré-definida e populada
@@ -84,4 +42,3 @@ Dica:
 Não é necessário, porém é possível utilizar uma ferramenta para abrir e visualizar o arquivo MyMusic.db de maneira mais fácil, como:
 
 https://sqlitestudio.pl
-
