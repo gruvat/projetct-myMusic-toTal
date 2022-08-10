@@ -8,6 +8,8 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.log4j.Log4j2;
+
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,8 +25,13 @@ import com.ciandt.summit.bootcamp2022.security.Token.TokenDTO;
 @Service
 public class TokenServiceImpl implements TokenService {
 
-    private final String TOKEN_PROVIDER_URL = "http://localhost:8080/api/v1/token";
+    private final String TOKEN_PROVIDER_URL;
+    private final String TOKEN_PROVIDER_ENDPOINTS_PATH = "/api/v1/token";
     private final String TOKEN_PROVIDER_AUTHENTICATION_PATH = "/authorizer";
+
+    public TokenServiceImpl(Environment env) {
+        this.TOKEN_PROVIDER_URL = env.getProperty("token.url");
+    }
 
     public boolean isAuthorized(HttpServletRequest request) {
         List<String> credentials = getCredentials(request);
@@ -71,7 +78,7 @@ public class TokenServiceImpl implements TokenService {
     private ResponseEntity<String> getApiAuthenticationResponse(TokenDTO tokenDto) {
         try {
             log.info("\uD83D\uDCAC  Getting authorization URI");
-            final String URI = this.TOKEN_PROVIDER_URL + this.TOKEN_PROVIDER_AUTHENTICATION_PATH;
+            final String URI = getAuthenticationPath();
             HttpEntity<TokenDTO> bodyRequestTokenApi = new HttpEntity<>(tokenDto);
 
             return postRequestAndResponseWithString(URI, bodyRequestTokenApi);
@@ -88,6 +95,10 @@ public class TokenServiceImpl implements TokenService {
         RestTemplate restTemplate = new RestTemplate();
         log.info("\uD83D\uDCAC  Posting request and converting response to String");
         return restTemplate.postForEntity(uri, body, String.class);
+    }
+
+    private String getAuthenticationPath() {
+        return TOKEN_PROVIDER_URL + TOKEN_PROVIDER_ENDPOINTS_PATH + TOKEN_PROVIDER_AUTHENTICATION_PATH;
     }
 
 }
