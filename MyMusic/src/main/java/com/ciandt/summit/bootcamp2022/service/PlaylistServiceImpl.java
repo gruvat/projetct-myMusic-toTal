@@ -73,7 +73,7 @@ public class PlaylistServiceImpl implements PlaylistService {
         log.info("\uD83D\uDCAC  Checking if music with Id " + musicId +
                 " exists in playlist with Id " + playlist.getId());
         return playlist.getMusics().stream().filter(m -> m.getId().equals(musicId))
-                .findFirst().orElseThrow(() -> new MusicNotFoundInPlaylistException("Music with id "
+                .findFirst().orElseThrow(() -> new MusicNotFoundInPlaylistException("Music with Id "
                         + musicId + " is not in the playlist."));
     }
 
