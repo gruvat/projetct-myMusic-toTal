@@ -9,16 +9,14 @@ import com.ciandt.summit.bootcamp2022.entity.Music;
 import com.ciandt.summit.bootcamp2022.entity.Playlist;
 import com.ciandt.summit.bootcamp2022.repository.MusicRepository;
 import com.ciandt.summit.bootcamp2022.repository.PlaylistRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
 
 
@@ -47,6 +45,11 @@ public class PlaylistServiceTest {
 
     @InjectMocks
     private PlaylistServiceImpl playlistService;
+
+    @AfterEach
+    void resetMocking() {
+        Mockito.reset(musicRepositoryMocked, playlistRepositoryMocked);
+    }
 
     @DisplayName(value = "Check if findPlaylistById search by id")
     @ParameterizedTest(name = "With Id {0}")
@@ -116,6 +119,8 @@ public class PlaylistServiceTest {
 
             playlistEmpty = new Playlist("1");
             playlistEmpty.setMusics(new HashSet<>());
+
+            Mockito.reset(musicRepositoryMocked, playlistRepositoryMocked);
         }
 
         @DisplayName(value = "Add music to playlist")
@@ -182,6 +187,16 @@ public class PlaylistServiceTest {
 
             assertEquals("Playlist with Id " + playlistId + " not found \uD83D\uDE41",
                     e.getMessage());
+        }
+
+        @DisplayName(value = "Check if findMusicsByPlaylistId returns musics")
+        @Test
+        void testfindMusicsByPlaylistIdSuccessful() {
+            playlistEmpty.setMusics(musics);
+            when(playlistRepositoryMocked.findById(any())).thenReturn(Optional.of(playlistEmpty));
+            when(musicRepositoryMocked.findMusicsByPlaylistId(playlistEmpty.getId())).thenReturn(playlistEmpty.getMusics());
+            assertEquals(musics,
+                    playlistService.findMusicsByPlaylistId(playlistEmpty.getId()));
         }
 
         @DisplayName(value = "Check if findMusicInPlaylistByMusicId returns music")
