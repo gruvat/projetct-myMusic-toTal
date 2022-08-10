@@ -73,7 +73,7 @@ public class MusicServiceTest {
     }
     @Nested
     @DisplayName(value = "Testing successful searches")
-    class testsSuccessfulSeaches {
+    class testsSuccessfulSearches {
         private Music musicAndArtistValidMusic;
         private Artist musicAndArtistValidArtist;
         private  Set<Music> musicsFound = new HashSet<>();
