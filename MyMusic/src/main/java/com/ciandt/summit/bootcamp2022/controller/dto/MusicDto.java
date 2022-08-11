@@ -29,7 +29,7 @@ public class MusicDto {
 
     public static Music toMusic(MusicDto musicDto) {
         Music music = new Music(musicDto.getId(), musicDto.getName());
-        music.setArtist(new Artist(music.getArtist().getId(), music.getArtist().getName()));
+        music.setArtist(new Artist(musicDto.getArtist().getId(), musicDto.getArtist().getName()));
         return music;
     }
 
