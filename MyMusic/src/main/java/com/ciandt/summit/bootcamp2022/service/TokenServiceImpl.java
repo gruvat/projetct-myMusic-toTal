@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.ciandt.summit.bootcamp2022.common.exception.service.CredentialsException;
@@ -31,12 +30,14 @@ public class TokenServiceImpl implements TokenService {
     private final String TOKEN_PROVIDER_ENDPOINTS_PATH = "/api/v1/token";
     private final String TOKEN_PROVIDER_AUTHENTICATION_PATH = "/authorizer";
 
-    public TokenServiceImpl() {
-        this.TOKEN_PROVIDER_URL = "http://localhost:8080";
-    }
-
     public TokenServiceImpl(Environment env) {
-        this.TOKEN_PROVIDER_URL = env.getProperty("token.url");
+        String tokenUrl = env.getProperty("token.url");
+
+        if(!Objects.isNull(tokenUrl)) {
+            this.TOKEN_PROVIDER_URL = tokenUrl;
+        } else {
+            this.TOKEN_PROVIDER_URL =  "http://localhost:8080";
+        }
     }
 
     public boolean isAuthorized(HttpServletRequest request) {
@@ -58,8 +59,8 @@ public class TokenServiceImpl implements TokenService {
             log.info("\uD83D\uDCAC  Getting headers from request");
             String authorizationHeader = request.getHeader("Authorization");
             String[] credentialsArray = Base64Token.decode(authorizationHeader);
-            
-            if (credentialsArray.length == 2 && !(credentialsArray[0].isEmpty() || credentialsArray[1].isEmpty())) {
+
+            if (!(credentialsArray[0].isEmpty() || credentialsArray[1].isEmpty())) {
                 log.info("\uD83D\uDFE2️ Getting credentials from request successfully");
                 return List.of(credentialsArray);
             } else {
