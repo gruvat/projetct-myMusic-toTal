@@ -129,6 +129,35 @@
 					<target>11</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.8</version>
+				<configuration>
+					<excludes>
+						<exclude>com/ciandt/summit/bootcamp2022/entity/**/*</exclude>
+						<exclude>**/config/*</exclude>
+						<exclude>com/ciandt/summit/bootcamp2022/SummitBootcampApplication.*</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<!--first execution : for preparing JaCoCo runtime agent-->
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<!--second execution : for creating code coverage reports-->
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
