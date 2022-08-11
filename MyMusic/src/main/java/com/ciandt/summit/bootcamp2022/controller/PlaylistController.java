@@ -1,11 +1,16 @@
 package com.ciandt.summit.bootcamp2022.controller;
 
+import com.ciandt.summit.bootcamp2022.common.exception.dto.ValidationErrorDto;
 import com.ciandt.summit.bootcamp2022.common.request.RequestMusicsData;
 import com.ciandt.summit.bootcamp2022.common.response.ResponseData;
 import com.ciandt.summit.bootcamp2022.controller.dto.MusicDto;
 import com.ciandt.summit.bootcamp2022.entity.Music;
 import com.ciandt.summit.bootcamp2022.service.PlaylistService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +27,7 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/playlists")
-@Tag(name = "Playlist")
+@Tag(name = "Playlists")
 @Log4j2
 public class PlaylistController {
 
@@ -33,11 +38,24 @@ public class PlaylistController {
             description = "Post musics to an existing playlist."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created"),
-            @ApiResponse(responseCode = "400", description = "Bad Request"),
-            @ApiResponse(responseCode = "401", description = "Not authorized")
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "400", description = "Not enough characters", content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class)))
+            }),
+            @ApiResponse(responseCode = "401", description = "Not authorized", content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class)))
+            }),
+            @ApiResponse(responseCode = "404", description = "Not found", content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class)))
+            })
     })
-    public ResponseEntity<String> postMusicsToPlaylist(@PathVariable final String playlistId,
+    public ResponseEntity<String> postMusicsToPlaylist(@PathVariable @Parameter(example = "a39926f4-6acb-4497-884f-d4e5296ef652") final String playlistId,
                                                        @RequestBody @Valid RequestMusicsData musicsData) {
 
         Set<Music> musics = new HashSet<>();
@@ -59,13 +77,30 @@ public class PlaylistController {
             description = "Find all musics in the playlist "
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Operation success"),
-            @ApiResponse(responseCode = "204", description = "No results"),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "401", description = "Not authorized")
+            @ApiResponse(responseCode = "200", description = "Operation success", content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = MusicDto.class)))
+            }),
+            @ApiResponse(responseCode = "204", description = "No results", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "400", description = "Not enough characters", content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class)))
+            }),
+            @ApiResponse(responseCode = "401", description = "Not authorized", content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class)))
+            }),
+            @ApiResponse(responseCode = "404", description = "Not found", content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class)))
+            })
     })
     public ResponseEntity<ResponseData<Set<Music>>> getMusicsFromPlaylistId(
-            @PathVariable final String playlistId) {
+            @PathVariable @Parameter(example = "a39926f4-6acb-4497-884f-d4e5296ef652") final String playlistId) {
         Set<Music> result;
 
         result = playlistService.findMusicsByPlaylistId(playlistId);
@@ -75,16 +110,30 @@ public class PlaylistController {
     }
 
     @DeleteMapping("/{playlistId}/musics/{musicId}")
-    @Operation(summary = "Remove music playlist",
+    @Operation(summary = "Remove music from playlist",
             description = "Remove music from a playlist"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "No content"),
-            @ApiResponse(responseCode = "400", description = "Bad Request"),
-            @ApiResponse(responseCode = "401", description = "Not authorized")
+            @ApiResponse(responseCode = "204", description = "No content, the music was successfully removed",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "400", description = "Not enough characters", content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class)))
+            }),
+            @ApiResponse(responseCode = "401", description = "Not authorized", content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class)))
+            }),
+            @ApiResponse(responseCode = "404", description = "Not found", content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class)))
+            })
     })
-    public ResponseEntity<String> deleteMusicFromPlaylist(@PathVariable final String playlistId,
-                                                          @PathVariable final String musicId) {
+    public ResponseEntity<String> deleteMusicFromPlaylist(@PathVariable @Parameter(example = "a39926f4-6acb-4497-884f-d4e5296ef652") final String playlistId,
+                                                          @PathVariable @Parameter(example = "67f5976c-eb1e-404e-8220-2c2a8a23be47") final String musicId) {
 
         playlistService.removeMusicFromPlaylistByMusicId(playlistId, musicId);
         log.info("\uD83D\uDFE2️ Music removed from playlist");

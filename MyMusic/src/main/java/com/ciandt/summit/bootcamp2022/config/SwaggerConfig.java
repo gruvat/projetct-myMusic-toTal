@@ -13,7 +13,15 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .components(new Components())
-                .info(new Info().title("MyMusic API").description(
-                        "This project consists in an API for song/artist search...").version("0.0.1"));
+                .info(new Info()
+                        .title("MyMusic API")
+                        .description(
+                        "API for musics and playlists management. There are four endpoints, " +
+                                "the first one is for finding musics in the database, the " +
+                                "second one is for adding musics in an existing playlist, " +
+                                "the third is for adding musics to a playlist and the fourth " +
+                                "is for removing a music from a playlist.")
+                        .version("0.0.1")
+                );
     }
 }
