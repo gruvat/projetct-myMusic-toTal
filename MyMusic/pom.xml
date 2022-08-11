@@ -152,6 +152,7 @@
 						<exclude>com/ciandt/summit/bootcamp2022/SummitBootcampApplication.*</exclude>
 						<exclude>com/ciandt/summit/bootcamp2022/common/exception/dto/*</exclude>
 						<exclude>com/ciandt/summit/bootcamp2022/common/response/*</exclude>
+						<exclude>com/ciandt/summit/bootcamp2022/security/**/*</exclude>
 					</excludes>
 				</configuration>
 				<executions>

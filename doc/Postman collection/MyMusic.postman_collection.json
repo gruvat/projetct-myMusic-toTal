@@ -35,12 +35,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/v1/token",
+							"raw": "{{deploy}}api/v1/token",
 							"host": [
-								"{{host}}"
+								"{{deploy}}api"
 							],
 							"path": [
-								"api",
 								"v1",
 								"token"
 							]
@@ -69,7 +68,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"name\": \"{{user}}\",\n        \"token\": \"{{token}}\"\n    }\n}",
+							"raw": "{\n    \"data\": {\n        \"name\": \"{{user-v1}}\",\n        \"token\": \"{{token-v1}}\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -77,9 +76,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/v1/token/authorizer",
+							"raw": "{{deploy}}/api/v1/token/authorizer",
 							"host": [
-								"{{host}}"
+								"{{deploy}}"
 							],
 							"path": [
 								"api",
@@ -94,7 +93,7 @@
 			]
 		},
 		{
-			"name": "Application",
+			"name": "Application - local",
 			"item": [
 				{
 					"name": "findAllMusics",
@@ -125,12 +124,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/musics",
-							"protocol": "http",
+							"raw": "{{localhost}}/api/musics",
 							"host": [
-								"localhost"
+								"{{localhost}}"
 							],
-							"port": "8081",
 							"path": [
 								"api",
 								"musics"
@@ -141,16 +138,17 @@
 				},
 				{
 					"name": "findMusicsByFilter",
+					"protocolProfileBehavior": {
+						"followAuthorizationHeader": false
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/musics?filter=björk",
-							"protocol": "http",
+							"raw": "{{localhost}}/api/musics?filter=Aerosmith",
 							"host": [
-								"localhost"
+								"{{localhost}}"
 							],
-							"port": "8081",
 							"path": [
 								"api",
 								"musics"
@@ -158,7 +156,7 @@
 							"query": [
 								{
 									"key": "filter",
-									"value": "björk"
+									"value": "Aerosmith"
 								}
 							]
 						}
@@ -172,7 +170,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": [\n         {\n            \"id\": \"b1dcbbc8-3d82-4f2a-837e-9bef0fb78342\",\n            \"name\": \"\\\"Let's Get Chinese Eyes\\\"\",\n            \"artist\": {\n                \"id\": \"911e1523-5dbc-4c8d-b4be-c83b3b5576af\",\n                \"name\": \"Björk\"\n            }\n        }\n    ]\n}",
+							"raw": "{\n    \"data\": [\n         {\n            \"id\": \"4b97d22f-172f-4849-a117-f7cdae0f6c77\",\n            \"name\": \"Let The Music Do The Talking\",\n            \"artist\": {\n                \"id\": \"a2672380-8803-4025-9ad3-4dda587be44c\",\n                \"name\": \"Aerosmith\"\n            }\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -180,12 +178,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8081/api/playlists/92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed/musics",
-							"protocol": "http",
+							"raw": "{{localhost}}/api/playlists/92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed/musics",
 							"host": [
-								"localhost"
+								"{{localhost}}"
 							],
-							"port": "8081",
 							"path": [
 								"api",
 								"playlists",
@@ -202,12 +198,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/playlists/92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed/musics",
-							"protocol": "http",
+							"raw": "{{localhost}}/api/playlists/92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed/musics",
 							"host": [
-								"localhost"
+								"{{localhost}}"
 							],
-							"port": "8081",
 							"path": [
 								"api",
 								"playlists",
@@ -224,12 +218,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/playlists/92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed/musics/c3a495ad-dcf2-4bb6-a937-fe1552c7b69d",
-							"protocol": "http",
+							"raw": "{{localhost}}/api/playlists/92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed/musics/c3a495ad-dcf2-4bb6-a937-fe1552c7b69d",
 							"host": [
-								"localhost"
+								"{{localhost}}"
 							],
-							"port": "8081",
 							"path": [
 								"api",
 								"playlists",
@@ -241,47 +233,257 @@
 					},
 					"response": []
 				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "{{token-v1}}",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "{{user-v1}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.sendRequest({",
+							"    url: \"http://localhost:8080/api/v1/token\",",
+							"    method: \"POST\",",
+							"    header: {",
+							"        \"Content-Type\": \"application/json\"",
+							"    },",
+							"    body: { ",
+							"        mode: 'raw',",
+							"        raw:JSON.stringify({",
+							"            \"data\": {",
+							"                    \"name\":pm.environment.get(\"user-v1\")",
+							"                }",
+							"            })",
+							"        }  ",
+							"    }, (err, res) => {",
+							"    pm.environment.set(\"token-v1\", res.text());",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Application - deploy",
+			"item": [
+				{
+					"name": "findAllMusics",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followAuthorizationHeader": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{deploy}}/api/musics",
+							"host": [
+								"{{deploy}}"
+							],
+							"path": [
+								"api",
+								"musics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findMusicsByFilter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{deploy}}/api/musics?filter=Aerosmith",
+							"host": [
+								"{{deploy}}"
+							],
+							"path": [
+								"api",
+								"musics"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "Aerosmith"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postMusicsToPlaylist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": [\n         {\n            \"id\": \"4b97d22f-172f-4849-a117-f7cdae0f6c77\",\n            \"name\": \"Let The Music Do The Talking\",\n            \"artist\": {\n                \"id\": \"a2672380-8803-4025-9ad3-4dda587be44c\",\n                \"name\": \"Aerosmith\"\n            }\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{deploy}}/api/playlists/92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed/musics",
+							"host": [
+								"{{deploy}}"
+							],
+							"path": [
+								"api",
+								"playlists",
+								"92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed",
+								"musics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findMusicsByPlaylistId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{deploy}}/api/playlists/92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed/musics",
+							"host": [
+								"{{deploy}}"
+							],
+							"path": [
+								"api",
+								"playlists",
+								"92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed",
+								"musics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteMusicFromPlaylistByPlaylistId",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{deploy}}/api/playlists/92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed/musics/c3a495ad-dcf2-4bb6-a937-fe1552c7b69d",
+							"host": [
+								"{{deploy}}"
+							],
+							"path": [
+								"api",
+								"playlists",
+								"92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed",
+								"musics",
+								"c3a495ad-dcf2-4bb6-a937-fe1552c7b69d"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "{{token-v1}}",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "{{user-v1}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.sendRequest({",
+							"    url: \"https://mymusic-tokenprovider.herokuapp.com/api/v1/token\",",
+							"    method: \"POST\",",
+							"    header: {",
+							"        \"Content-Type\": \"application/json\"",
+							"    },",
+							"    body: { ",
+							"        mode: 'raw',",
+							"        raw:JSON.stringify({",
+							"            \"data\": {",
+							"                    \"name\":pm.environment.get(\"user-v1\")",
+							"                }",
+							"            })",
+							"        }  ",
+							"    }, (err, res) => {",
+							"    pm.environment.set(\"token-v1\", res.text());",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
 		}
 	],
-	"auth": {
-		"type": "basic",
-		"basic": [
-			{
-				"key": "username",
-				"value": "{{user}}",
-				"type": "string"
-			},
-			{
-				"key": "password",
-				"value": "{{token}}",
-				"type": "string"
-			}
-		]
-	},
 	"event": [
 		{
 			"listen": "prerequest",
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					"pm.sendRequest({",
-					"    url: \"http://localhost:8080/api/v1/token\",",
-					"    method: \"POST\",",
-					"    header: {",
-					"        \"Content-Type\": \"application/json\"",
-					"    },",
-					"    body: { ",
-					"        mode: 'raw',",
-					"        raw:JSON.stringify({",
-					"            \"data\": {",
-					"                    \"name\":pm.collectionVariables.get(\"user\")",
-					"                }",
-					"            })",
-					"        }  ",
-					"    }, (err, res) => {",
-					"    pm.collectionVariables.set(\"token\", res.text());",
-					"});",
 					""
 				]
 			}
@@ -294,17 +496,6 @@
 					""
 				]
 			}
-		}
-	],
-	"variable": [
-		{
-			"key": "token",
-			"value": "token-key"
-		},
-		{
-			"key": "user",
-			"value": "user",
-			"type": "default"
 		}
 	]
 }
