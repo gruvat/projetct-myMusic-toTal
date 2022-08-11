@@ -8,7 +8,7 @@ was previously created.
 
 ## API Spec
 <a href="https://mymusic-application.herokuapp.com/mymusic/swagger-ui/index.html">
-<img src="http://online.swagger.io/validator?url={https://mymusic-application.herokuapp.com/v3/api-docs}">
+<img src="https://validator.swagger.io/validator/?url=https%3A%2F%2Fmymusic-application.herokuapp.com%2Fv3%2Fapi-docs">
 </a>
 
 <sub>You can click on the image above to be redirected to the swagger documentation.</sub>
