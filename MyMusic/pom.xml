@@ -143,6 +143,8 @@
 						<exclude>com/ciandt/summit/bootcamp2022/entity/**/*</exclude>
 						<exclude>**/config/*</exclude>
 						<exclude>com/ciandt/summit/bootcamp2022/SummitBootcampApplication.*</exclude>
+						<exclude>com/ciandt/summit/bootcamp2022/common/exception/dto/*</exclude>
+						<exclude>com/ciandt/summit/bootcamp2022/common/response/*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
