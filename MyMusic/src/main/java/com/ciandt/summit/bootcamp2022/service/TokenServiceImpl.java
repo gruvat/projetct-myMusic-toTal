@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import com.ciandt.summit.bootcamp2022.common.exception.service.CredentialsException;
 import com.ciandt.summit.bootcamp2022.common.exception.service.RequestTokenProviderApiException;
 import com.ciandt.summit.bootcamp2022.security.Token.TokenDTO;
+import com.ciandt.summit.bootcamp2022.service.util.Base64Token;
 
 @Log4j2
 @Service
@@ -56,15 +57,7 @@ public class TokenServiceImpl implements TokenService {
         try {
             log.info("\uD83D\uDCAC  Getting headers from request");
             String authorizationHeader = request.getHeader("Authorization");
-
-            String base64Credentials = authorizationHeader.substring("Basic".length()).trim();
-
-            log.info("\uD83D\uDCAC  Decoding credentials");
-            byte[] credentialsDecoded = Base64.getDecoder().decode(base64Credentials);
-
-            String credentials = new String(credentialsDecoded, StandardCharsets.UTF_8);
-            
-            String[] credentialsArray = credentials.split(":");
+            String[] credentialsArray = Base64Token.decode(authorizationHeader);
             
             if (credentialsArray.length == 2 && !(credentialsArray[0].isEmpty() || credentialsArray[1].isEmpty())) {
                 log.info("\uD83D\uDFE2️ Getting credentials from request successfully");

@@ -3,11 +3,10 @@ package com.ciandt.summit.bootcamp2022.service;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Base64;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -17,6 +16,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.ciandt.summit.bootcamp2022.common.exception.service.CredentialsException;
 import com.ciandt.summit.bootcamp2022.common.exception.service.RequestTokenProviderApiException;
+import com.ciandt.summit.bootcamp2022.service.util.Base64Token;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
@@ -40,9 +40,15 @@ public class TokenServiceTest {
         wireMockServer.start();
     }
 
-    @AfterEach
-    void resetMocking() {
+    @BeforeEach
+    void startingMocking() {
+        wireMockServer.start();
         WireMock.reset();
+    }
+
+    @AfterEach
+    void shuttingDownMocking() {
+        wireMockServer.stop();
     }
 
     @AfterAll
@@ -71,9 +77,7 @@ public class TokenServiceTest {
         );
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-
-        String credentials = "user:token";
-        String validAutorizationHeader = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
+        String validAutorizationHeader = Base64Token.encode("user", "token");
 
         request.setServerName("localhost:8080");
         request.setRequestURI("/api/musics");
@@ -101,9 +105,7 @@ public class TokenServiceTest {
     void callWithTokenMissingCredential() {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-
-        String credentials = "user:";
-        String validAutorizationHeader = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
+        String validAutorizationHeader = Base64Token.encode("user", "");
 
         request.setServerName("localhost:8080");
         request.setRequestURI("/api/musics");
@@ -117,9 +119,7 @@ public class TokenServiceTest {
     void callWithTokenMissingBothCredentials() {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-
-        String credentials = ":";
-        String validAutorizationHeader = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
+        String validAutorizationHeader = Base64Token.encode("", "");
 
         request.setServerName("localhost:8080");
         request.setRequestURI("/api/musics");
@@ -142,9 +142,7 @@ public class TokenServiceTest {
         );
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-
-        String credentials = "user:token";
-        String validAutorizationHeader = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
+        String validAutorizationHeader = Base64Token.encode("user", "token");
 
         request.setServerName("localhost:8080");
         request.setRequestURI("/api/musics");
@@ -167,9 +165,7 @@ public class TokenServiceTest {
         );
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-
-        String credentials = "user:$%#@%$";
-        String validAutorizationHeader = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
+        String validAutorizationHeader = Base64Token.encode("user", "$%#@%$");
 
         request.setServerName("localhost:8080");
         request.setRequestURI("/api/musics");
@@ -183,21 +179,12 @@ public class TokenServiceTest {
     // API can't be reached
     @Test
     void callWhenTokenProviderAppIsOffline() {
-
-        wireMockServer.givenThat(
-            WireMock.post("/api/v1/token/authorizer")
-                .willReturn(
-                    aResponse()
-                        .withStatus(HttpStatus.BAD_GATEWAY.value())
-                )
-        );
+        wireMockServer.stop();
 
         MockHttpServletRequest request = new MockHttpServletRequest();
+        String validAutorizationHeader = Base64Token.encode("user", "token");
 
-        String credentials = "user:token";
-        String validAutorizationHeader = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
-
-        request.setServerName("localhost:8088");
+        request.setServerName("localhost:8081");
         request.setRequestURI("/api/musics");
         request.addHeader("Authorization", validAutorizationHeader);
 
