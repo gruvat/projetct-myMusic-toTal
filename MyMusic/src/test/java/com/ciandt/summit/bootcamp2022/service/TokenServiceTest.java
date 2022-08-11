@@ -36,8 +36,6 @@ public class TokenServiceTest {
     static void startWiremock() {
         wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig()
             .port(8080));
-        
-        wireMockServer.start();
     }
 
     @BeforeEach
@@ -49,19 +47,6 @@ public class TokenServiceTest {
     @AfterEach
     void shuttingDownMocking() {
         wireMockServer.stop();
-    }
-
-    @AfterAll
-    static void stopWireMock() {
-        wireMockServer.stop();
-    }
-
-    @Test
-    void testWireMock() {
-
-        System.out.println(wireMockServer.baseUrl());
-        assertTrue(wireMockServer.isRunning());
-
     }
 
     @Test
