@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -17,7 +17,8 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@DataJpaTest
+@TestPropertySource("classpath:application-repository.properties")
 public class MusicRepositoryTest {
 
     @Autowired
@@ -27,9 +28,10 @@ public class MusicRepositoryTest {
     @Nested
     @DisplayName(value = "Test method findMusicsByMusicsAndArtistsName")
     public class FindMusicsByMusicsAndArtistsName {
+
         @DisplayName(value = "Find music")
         @ParameterizedTest(name = "By full name {0}")
-        @ValueSource(strings = {"\"Cassius\" Love Vs. \"Sonny\" Wilson", "313"})
+        @ValueSource(strings = {"I want to break free"})
         public void testFindMusicsByFullName(String name) {
             musics = musicRepository.findMusicsByMusicsAndArtistsName(name);
             musics.forEach(m -> assertEquals(name, m.getName(),
@@ -38,7 +40,7 @@ public class MusicRepositoryTest {
 
         @DisplayName("Find multiple musics")
         @ParameterizedTest(name = "By part of the name {0}")
-        @ValueSource(strings = {"Reminiscing", "Help!"})
+        @ValueSource(strings = {"Want", "br"})
         public void testFindMultipleMusicsByPartOfTheName(String name) {
             musics = musicRepository.findMusicsByMusicsAndArtistsName(name);
 
@@ -48,7 +50,7 @@ public class MusicRepositoryTest {
 
         @DisplayName("Find multiple musics and return in order")
         @ParameterizedTest(name = "By name or part of the name {0}")
-        @ValueSource(strings = {"Love", "Help!"})
+        @ValueSource(strings = {"Want", "Sing"})
         public void testFindMultipleMusicsOrderedByNameOrPartOfTheName(String name) {
             musics = musicRepository.findMusicsByMusicsAndArtistsName(name);
 
@@ -63,7 +65,7 @@ public class MusicRepositoryTest {
 
         @DisplayName("Find musics ignoring case")
         @ParameterizedTest(name = "with name {0}")
-        @ValueSource(strings = {"falling like rain", "STRAWBERRY FIELDS FOREVER"})
+        @ValueSource(strings = {"i want to break free", "SING FOR THE MOMENT"})
         public void testFindMusicsByNameIgnoringCase(String name) {
             musics = musicRepository.findMusicsByMusicsAndArtistsName(name);
 
@@ -85,13 +87,12 @@ public class MusicRepositoryTest {
         @Test
         public void testReturnIfParameterIsEmpty() {
             musics = musicRepository.findMusicsByMusicsAndArtistsName("");
-            assertNotEquals(0, musics.size(), () -> "Should return all musics");
+            assertEquals(2, musics.size(), () -> "Should return all musics");
         }
     }
 
     @Nested
     @DisplayName(value = "Test method findMusicsByPlaylistId")
-
     public class FindMusicsByPlaylistId {
 
         @Autowired
@@ -99,7 +100,7 @@ public class MusicRepositoryTest {
 
         @DisplayName("Find all musics by playlistId")
         @ParameterizedTest(name = "with playlistId {0}")
-        @ValueSource(strings = {"92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed"})
+        @ValueSource(strings = {"1"})
         public void testFindMusicsByPlaylistId(String playlistId) {
             Set<Music> musicsByPlaylistFromPlaylistRepository = playlistRepository.findById(playlistId).get().getMusics();
             Set<Music> musicsByPlaylistFromMusicRepository = musicRepository.findMusicsByPlaylistId(playlistId);
@@ -113,7 +114,7 @@ public class MusicRepositoryTest {
 
         @DisplayName("Find musics by playlistId ordered by artist's name and music's name")
         @ParameterizedTest(name = "with playlistId {0}")
-        @ValueSource(strings = {"92d8123f-e9f6-4806-8e0e-1c6a5d46f2ed"})
+        @ValueSource(strings = {"1"})
         public void testFindOrderedMusicsByPlaylistId(String playlistId) {
             Set<Music> musics = musicRepository.findMusicsByPlaylistId(playlistId);
 
