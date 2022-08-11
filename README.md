@@ -14,7 +14,7 @@ was previously created.
 <sub>You can click on the image above to be redirected to the swagger documentation.</sub>
 
 
-## Functionalities
+## Features
 
 ### Musics
 - `Search all musics`: retrieve all musics in the database sorted by artists names and then musics names.
