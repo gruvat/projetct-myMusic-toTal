@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.ciandt.summit.bootcamp2022.common.exception.service.CredentialsException;
@@ -28,6 +29,10 @@ public class TokenServiceImpl implements TokenService {
     private final String TOKEN_PROVIDER_URL;
     private final String TOKEN_PROVIDER_ENDPOINTS_PATH = "/api/v1/token";
     private final String TOKEN_PROVIDER_AUTHENTICATION_PATH = "/authorizer";
+
+    public TokenServiceImpl() {
+        this.TOKEN_PROVIDER_URL = "http://localhost:8080";
+    }
 
     public TokenServiceImpl(Environment env) {
         this.TOKEN_PROVIDER_URL = env.getProperty("token.url");
