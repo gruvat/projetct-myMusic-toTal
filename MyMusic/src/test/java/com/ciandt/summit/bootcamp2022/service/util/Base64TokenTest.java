@@ -16,13 +16,13 @@ public class Base64TokenTest {
     }
 
     @Test
-    void encondingWithPartialCredentials() {
+    void encodingWithPartialCredentials() {
         String encondedCredentials = "Basic " + Base64.getEncoder().encodeToString("user:".getBytes());
         assertEquals(encondedCredentials, Base64Token.encode("user", ""));
     }
 
     @Test
-    void encondingWithNoCredentials() {
+    void encodingWithNoCredentials() {
         String encondedCredentials = "Basic " + Base64.getEncoder().encodeToString(":".getBytes());
         assertEquals(encondedCredentials, Base64Token.encode("", ""));
     }
@@ -36,14 +36,14 @@ public class Base64TokenTest {
     }
 
     @Test
-    void decondingWithPartialCredentials() {
+    void decodingWithPartialCredentials() {
         String credentials = "user:";
         String encondedCredentials = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
         assertArrayEquals(new String[]{"user", ""}, Base64Token.decode(encondedCredentials));
     }
 
     @Test
-    void decondingWithNoCredentials() {
+    void decodingWithNoCredentials() {
         String credentials = ":";
         String encondedCredentials = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
         assertArrayEquals(new String[]{"", ""}, Base64Token.decode(encondedCredentials));
