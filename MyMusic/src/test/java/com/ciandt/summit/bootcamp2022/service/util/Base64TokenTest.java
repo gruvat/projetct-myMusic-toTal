@@ -38,17 +38,15 @@ public class Base64TokenTest {
     @Test
     void decondingWithPartialCredentials() {
         String credentials = "user:";
-        String[] decodedCredentials = credentials.split(":");
         String encondedCredentials = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
-        assertArrayEquals(decodedCredentials, Base64Token.decode(encondedCredentials));
+        assertArrayEquals(new String[]{"user", ""}, Base64Token.decode(encondedCredentials));
     }
 
     @Test
     void decondingWithNoCredentials() {
         String credentials = ":";
-        String[] decodedCredentials = credentials.split(":");
         String encondedCredentials = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
-        assertArrayEquals(decodedCredentials, Base64Token.decode(encondedCredentials));
+        assertArrayEquals(new String[]{"", ""}, Base64Token.decode(encondedCredentials));
     }
     
 }
